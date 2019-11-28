@@ -25,18 +25,18 @@ PieceCoords::PieceCoords(vector<pair<int,int>> blocks): blocks{blocks} {
     this->height = highest - lowest + 1;
 }
 
-vector<pair<int,int>> PieceCoords::getBlocks() {
+vector<pair<int,int>>& PieceCoords::getBlocks() const {
     return blocks;
 }
-int PieceCoords::getWidth() {
+int PieceCoords::getWidth() const {
     return width;
 }
-int PieceCoords::getHeight() {
+int PieceCoords::getHeight() const {
     return height;
 }
-int PieceCoords::getLowest() {
+int PieceCoords::getLowest() const {
     return lowest;
 }
-int PieceCoords::getLeftmost() {
+int PieceCoords::getLeftmost() const {
     return leftmost;
 }

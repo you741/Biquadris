@@ -1,16 +1,7 @@
-#ifndef __COMMAND_H__
-#define __COMMAND_H__
-#include "board.h"
-#include "block.h"
-#include "force.h"
-#include "heavy.h"
-#include "blind.h"
-#include "changepiece.h"
-#include "random.h"
-#include "drop.h"
-#include "rotate.h"
-#include "move.h"
-#include "level.h"
+#ifndef COMMAND_H
+#define COMMAND_H
+#include <string>
+#include "piece.h"
 
 enum CommandType { // enum for different command types
   Force,
@@ -20,21 +11,28 @@ enum CommandType { // enum for different command types
   NoRandom,
   Random,
   Drop,
-  Rotate,
+  Clockwise,
   CounterClockwise,
-  Move,
-  Level
+  MoveLeft,
+  MoveRight,
+  MoveDown,
+  LevelUp,
+  LevelDown,
+  Sequence,
+  EOF
 };
 
-class Command { // command class will generate specialized commands using its getCommand static method
-   protected:
-    bool special = false; // special commands are applied to the opponent, so we need a way to distinguish them
-   public:
-    static Command *getCommand(CommandType c);
-    static Command *getCommand(CommandType c, BlockType b);
-    static Command *getCommand(CommandType c, int change);
-    static Command *getCommand(CommandType c, int r, int d);
-    bool isSpecial();
-    virtual void apply(Board *b) = 0;
+struct Command { // command struct will hold any data that is required for the Game and Board to know what kind of Command it is
+    CommandType commandType; // type of command
+    std::string file = ""; // file name which is required for some commands
+    BlockType b = BlockType::I; // BlockType which is required by the ChangePiece command
+    bool special = false; // whether the command is special or not
+    int rep = 1; // how many times the command is repeated
+
+    // all the constructors
+    Command(CommandType c, int rep = 1);
+    Command(CommandType c, std::string file, int rep = 1);
+    Command(CommandType c, BlockType b, int rep = 1);
+    Command(CommandType c, bool special, int rep = 1);
 };
 #endif
