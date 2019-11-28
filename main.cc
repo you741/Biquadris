@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #include "commandargs.h"
-// #include "game.h"
+#include "game.h"
 
 using namespace std;
 
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Create and run game
-    // Game(ca);
-    // Game.run();
+    Game(ca);
+    Game.readInput(cin);
 
 }
