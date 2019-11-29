@@ -53,7 +53,27 @@ PieceCoords* Piece::getCoords() const { // returns a raw pointer, the actual coo
     return coords.get();
 }
 
-void PieceCoords::setCoords(PieceCoords* pc) {
+vector<pair<int,int>>& Piece::getBlocks() const {
+    return coords->getBlocks();
+}
+
+int Piece::getWidth() const {
+    return coords->getWidth();
+}
+
+int Piece::getHeight() const {
+    return coords->getHeight();
+}
+
+int Piece::getLowest() const {
+    return coords->getLowest();
+}
+
+int Piece::getLeftmost() const {
+    return corrds->getLeftmost();
+}
+
+void Piece::setCoords(PieceCoords* pc) {
     this->coords = unique_ptr<PieceCoords>(pc); // takes ownership of the new coordinates. The old one is destroyed
 }
 
@@ -85,4 +105,28 @@ PieceCoords* Piece::movePiece(int right, int down) const { // returns coordinate
         newBlocks.emplace_back(make_pair(p.first + right, p.second - down));
     }
     return new PieceCoords{newBlocks};
+}
+
+bool Piece::hasCoord(pair<int,int> p) const {
+    for(const auto &b: coords->getBlocks()) {
+        if (p == b) { // if the pair exists then we return true
+            return true;
+        }
+    }
+    return false;
+}
+
+vector<Block*> Piece::makeBlocks() const { // generates a vector of block pointers
+    vector<Block*> newBlocks;
+    for(const auto &p: coords->getBlocks()) { // first adds a block for every coordinate
+        newBlocks.emplace_back(new Block{p, points, colour, sym});
+    }
+    for(auto block: newBlocks) { // next add the other blocks to each block as a neighbour
+        for(auto neighbour: newBlocks) {
+            if(block != neighbour) {
+                block->addNeighbour(neighbour); // adds all the other blocks as neighbours except for itself
+            }
+        }
+    }
+    return newBlocks;
 }
