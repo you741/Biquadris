@@ -16,7 +16,7 @@ Game::Game(CommandArgs ca) {
     boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile1, ca.startLevel});
     boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile2, ca.startLevel});
     graphics = make_unique<GraphicsDisplay>();
-    td = make_unique<TextDisplay>();
+    td = make_unique<TextDisplay>(boards);
 }
 
 void Game::readInput(istream &in) {
@@ -30,13 +30,13 @@ void Game::readInput(istream &in) {
 
         // Either quit if it is coming from user
         //  or the file is done creating inputs
-        if (c.getType() == Command::EOF) {
+        if (c.commandType == CommandType::EOF) {
             return;
         }
         // If command is Sequence, must start reading from the file instead
-        if (c.getType() == Command::Sequence) {
+        if (c.commandType == CommandType::Sequence) {
             ifstream inputFile;
-            inputFile.open(curboard.file);
+            inputFile.open(c.file);
             if (inputFile.is_open()) {
                 readInput(inputFile);
                 inputFile.close();
@@ -50,7 +50,7 @@ void Game::readInput(istream &in) {
 
         // If it is dropped, check if any special actions are triggered.
         //  Switch turns 
-        if (c.getType() == Command::Drop) {
+        if (c.commandType == CommandType::Drop) {
             if (curBoard.getSpecial()) {
                 Command &sc = input.readCommand(true);
                 //Apply the special command to other board
