@@ -10,9 +10,6 @@ class Board;
 class TextDisplay {
   std::vector<Board*> boards;
 
-  //Width of a board
-  const w = 12;
-
  public:
   TextDisplay(int n);
 
