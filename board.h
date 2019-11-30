@@ -5,6 +5,9 @@
 #include "cell.h"
 #include "piecesequence.h"
 
+const int WIDTH = 11; // height and width of the board, they are global
+const int HEIGHT = 15;
+
 class Board {
     int lastCleared = 0; // the last turn a row was cleared
     int turn = 0; // the turn of the board. goes up by one every drop
@@ -12,8 +15,6 @@ class Board {
     std::unique_ptr<Piece> nextPiece;
     std::vector<std::vector<Cell>> grid;
     PieceSequence seq; // the seq will let us generate next pieces
-    int width;
-    int height;
     bool heavy = false;
     bool blind = false;
     Level level;
