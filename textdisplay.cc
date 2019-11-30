@@ -3,49 +3,55 @@
 #include <iomanip>
 #include <utility>
 #include <algorithm>
-#include "subject.h"
 #include "textdisplay.h"
 using namespace std;
 
 
-TextDisplay::TextDisplay(vector<Board> bs): {
+TextDisplay::TextDisplay(const vector<Board> &bs): {
     for (int i = 0; i < bs.size(); ++i) {
         boards.emplace_back(&bs[i]);
     }
 };
 
-// When a cell is changed, draw the TextDisplay
-void TextDisplay::notify(Subject<BoardInfo, BoardState> &whoNotified) {
-	drawBoards(cout);
-}
-
 void TextDisplay::drawBoards(std::ostream &out) {
     drawLevel(out);
     drawScore(out);
+    drawHorizontalLine(out);
     drawGrid(out);
+    drawHorizontalLine(out);
     drawNext(out);
 }
 
 void TextDisplay::drawLevel(std::ostream &out) {
     for (int i = 0; i < boards.size(); ++i) {
         if (i != 0) {
-            cout << setw(8);
+            out << setw(8);
         }
-        board = boards[i];
-        cout << "Level:" << setw(w-6) << board->getLevel();
+        out << "Level:" << setw(boards[0].getWidth()-6) << boards[i]->getLevel();
     }
-    cout << endl;
+    out << endl;
 }
 
 void TextDisplay::drawScore(std::ostream &out) {
     for (int i = 0; i < boards.size(); ++i) {
         if (i != 0) {
-            cout << setw(8);
+            out << setw(8);
         }
-        board = boards[i];
-        cout << "Score:" << setw(w-6) << board->getScore();
+        out << "Score:" << setw(boards[0].getWidth()-6) << boards[i]->getScore();
     }
-    cout << endl;
+    out << endl;
+}
+
+void TextDisplay::drawHorizontalLine(std::ostream &out) {
+    for (int i = 0; i < boards.size(); ++i) {
+        if (i != 0) {
+            out << setw(8);
+        }
+        for (int j=0;j<boards[0].getWidth();++j) {
+	    out << "-";
+	}
+    }
+    out << endl;
 }
 
 void TextDisplay::drawGrid(std::ostream &out) {
@@ -55,21 +61,21 @@ void TextDisplay::drawGrid(std::ostream &out) {
     for (int y = boardHeight - 1; y >= 0; --y) {
         for (int i = 0; i < boards.size(); ++i) {
             if (i != 0) {
-                cout << setw(8);
+                out << setw(8);
             }
-            board = boards[i];
+            Board board = boards[i];
             for (int x = 0; x < boardWidth; ++x) {
                 if (board.getGrid()[boardHeight - y][x].getHasBlock()) {
-                    cout << board.getGrid()[y][x].getBlock().getSym();
+                    out << board.getGrid()[y][x].getBlock().getSym();
                 } else if (board.getCurPiece().hasCoord(make_pair(y, x))) {
-                    cout << board.getCurPiece().getSym();
+                    out << board.getCurPiece().getSym();
                 } else {
                     // change to space if this works
-                    cout << "-";
+                    out << "*";
                 }
             }
         }
-        cout << endl;
+        out << endl;
     }
 }
 
@@ -80,32 +86,32 @@ void TextDisplay::drawNext(std::ostream &out) {
     // Get height and width of the piececoord, then get the coordinate relatively
     int maxHeight = 0;
     for (int i = 0; i < boards.size(); ++i) {
-        board = boards[i];
-        maxHeight = max(maxHeight, board.getCurPiece().getHeight());
+        Board board = boards[i];
+        maxHeight = max(maxHeight, board.getNextPiece().getHeight());
     }
     for (int y = 0; y < maxHeight; ++y) {
         for (int i = 0; i < boards.size(); ++i) {
             if (i != 0) {
-                cout << setw(8);
+                out << setw(8);
             }
             board = boards[i];
-            int curPieceHeight = board.getCurPiece().getHeight();
+            int curPieceHeight = board.getNextPiece().getHeight();
             for (int x = 0; x < boardWidth; ++x) {
-                if (board.getCurPiece().hasCoord(make_pair(curPieceHeight - 1 - y,x))) {
-                    cout << board.getCurPiece().getSym();
+                if (board.getNextPiece().hasCoord(make_pair(curPieceHeight - 1 - y,x))) {
+                    out << board.getCurPiece().getSym();
                 } else {
                     // change to space if this works
-                    cout << "-";
+                    out << "*";
                 }
             }
         }
-        cout << endl;
+        out << endl;
     }
 }
 
 
 // // Print the 2D char array
-// std::ostream &operator<<(std::ostream &out, const TextDisplay &td) {
-// 	drawBoards(out);
-// 	return out;
-// }
+std::ostream &operator<<(std::ostream &out, const TextDisplay &td) {
+    drawBoards(out);
+    return out;
+}
