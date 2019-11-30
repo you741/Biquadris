@@ -3,23 +3,24 @@
 #include <string>
 #include "piece.h"
 
-enum CommandType { // enum for different command types
-  Force,
-  Heavy,
-  Blind,
-  ChangePiece,
-  NoRandom,
-  Random,
-  Drop,
-  Clockwise,
-  CounterClockwise,
-  MoveLeft,
-  MoveRight,
-  MoveDown,
-  LevelUp,
-  LevelDown,
-  Sequence,
-  EOF
+enum CommandType: int { // enum for different command types
+    MoveLeft = 0,
+    MoveRight,
+    MoveDown,
+    Clockwise,
+    CounterClockwise,
+    LevelUp,
+    LevelDown,
+    NoRandom,
+    Random,
+    Sequence,
+    Restart,
+    Heavy,
+    Force,
+    Blind,
+    ChangePiece,
+    EndOfFile,
+    INVALID
 };
 
 struct Command { // command struct will hold any data that is required for the Game and Board to know what kind of Command it is
