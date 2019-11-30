@@ -1,37 +1,39 @@
 #include "inputreader.h"
+#include "block.h"
+
 using namespace std;
 
 bool IsIn(const vector<string> &v, const string &s) {
-    for (int i=0;i<v.size();++i) 
+    for (int i=0;i<v.size();++i)
         if (v[i] == s) return true;
-    return false;    
+    return false;
 }
 
 InputReader::InputReader(istream& in): in {in} {};
 
 Command InputReader::readCommand(bool special) {
     if (in.eof()) {
-        return Command {EndOfFile};   
+        return Command {EndOfFile};
     }
-    
+
     string curline;
     getline(in, curline);
     istringstream iss {curline};
-    
+
     int numToRepeat = 1;
     const vector<string> blockShapes = {"I", "J", "L", "O", "S", "Z", "T"},
-        specialCommands = {"heavy", "force", "blind"}, 
+        specialCommands = {"heavy", "force", "blind"},
         needFileCommands = {"norandom", "sequence"},
-        unrepeatableCommands = {"restart"}; 
-    
+        unrepeatableCommands = {"restart"};
+
     if (!(iss >> numToRepeat)) {
         iss.clear();
     }
-    
+
     string enteredCommand;
     iss >> enteredCommand;
 
-    if (special) {
+    if (special) { // forces command to be special, otherwise invalid
         for (int i=0;i<validCommands.size();++i) {
             if (validCommands[i].find(enteredCommand) == 0 && IsIn(specialCommands, validCommands[i])) {
                 return Command {static_cast<CommandType>(i), numToRepeat};
@@ -40,22 +42,22 @@ Command InputReader::readCommand(bool special) {
         return Command {INVALID};
     }
 
-    if (IsIn(blockShapes, enteredCommand)) {
-        return Command {ChangePiece, enteredCommand};
+    if (IsIn(blockShapes, enteredCommand)) { // handles the single character commands, they are special
+        return Command {ChangePiece, static_cast<BlockType>(enteredCommand[0])};
     }
-    
+
     string realCommand;
     int count = 0;
-    int index = 0; 
-    
+    int index = 0;
+
     for (int i = 0; i<validCommands.size(); ++i) {
         if (validCommands[i].find(enteredCommand) == 0) {
-            count++;   
-            realCommand = validCommands[i]; 
+            count++;
+            realCommand = validCommands[i];
             index = i;
         }
     }
-    
+
     if (count != 1) {
         return Command {INVALID};
     } else {
@@ -64,9 +66,9 @@ Command InputReader::readCommand(bool special) {
             iss >> file;
             return Command {static_cast<CommandType>(index), file};
         } else if (IsIn(unrepeatableCommands, realCommand)) {
-            return Command {static_cast<CommandType>(index)};  
+            return Command {static_cast<CommandType>(index)};
         } else {
             return Command {static_cast<CommandType>(index), numToRepeat};
         }
     }
-}   
+}

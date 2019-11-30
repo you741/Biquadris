@@ -12,6 +12,7 @@ class PieceSequence { // this class can determine what the next piece is based o
     bool random = false; // whether we use probabilities to calculate the next piece or not
     std::unique_ptr<Level> level; // the level of the board that owns this PieceSequence
 public:
+    PieceSequence(int lvl = 0);
     PieceSequence(std::string filename, int lvl = 0);
     PieceSequence(bool random, int lvl = 0);
     Piece* getPiece();
