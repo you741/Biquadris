@@ -7,6 +7,8 @@ bool IsIn(const vector<string> &v, const string &s) {
     return false;    
 }
 
+InputReader::InputReader(istream& in): in {in} {};
+
 Command InputReader::readCommand(bool special) {
     if (in.eof()) {
         return Command {EndOfFile};   

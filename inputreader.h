@@ -20,6 +20,7 @@ class InputReader {
 
     public:
     InputReader() = default;
+    InputReader(std::istream &in);
     ~InputReader() = default;
     InputReader(const InputReader& other) = delete;
     InputReader operator=(const InputReader& other) = delete;
