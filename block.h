@@ -4,13 +4,13 @@
 #include <vector>
 
 enum BlockType {
- Z,
- T,
- I,
- J,
- L,
- O,
- S
+ Z='Z',
+ T='T',
+ I='I',
+ J='J',
+ L='L',
+ O='O',
+ S='S'
 };
 
 class Block {
