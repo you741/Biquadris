@@ -3,8 +3,8 @@
 #include <iostream>
 #include <vector>
 #include "observer.h"
-#include "state.h"
-#include "info.h"
+#include "boardstate.h"
+#include "boardinfo.h"
 class Board;
 
 class TextDisplay: public Observer<Info, State> {

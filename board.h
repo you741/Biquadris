@@ -5,14 +5,6 @@
 #include "cell.h"
 #include "piecesequence.h"
 
-struct BoardInfo {
-    bool blind;
-    int score;
-    PieceCoords pc;
-    vector<std::vector<Cell>> grid;
-    Level level;
-};
-
 class Board {
     int lastCleared = 0; // the last turn a row was cleared
     int turn = 0; // the turn of the board. goes up by one every drop
