@@ -3,20 +3,15 @@
 #include <iostream>
 #include <vector>
 #include "observer.h"
-#include "state.h"
-#include "info.h"
+#include "boardstate.h"
+#include "boardinfo.h"
 class Board;
 
-class TextDisplay: public Observer<Info, State> {
+class TextDisplay {
   std::vector<Board*> boards;
-
-  //Width of a board
-  const w = 12;
 
  public:
   TextDisplay(int n);
-
-  void notify(Subject<BoardInfo, BoardState> &whoNotified) override;
 
 //   friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);
 };

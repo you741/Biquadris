@@ -1,19 +1,20 @@
-//textdisplay.cc
+//graphicsdisplay.cc
 #include <iostream>
-#include <iomanip>
 #include <utility>
 #include <algorithm>
-#include "textdisplay.h"
+#include <sstream>
+#include "graphicsdisplay.h"
 using namespace std;
 
 
-TextDisplay::TextDisplay(const vector<Board> &bs): {
+
+GrahicsDisplay::Graphicsplay(const vector<Board> &bs): xw {new xwindow} boards {{}} {
     for (int i = 0; i < bs.size(); ++i) {
         boards.emplace_back(&bs[i]);
     }
 };
 
-void TextDisplay::drawBoards(std::ostream &out) {
+void GraphicsDisplay::drawBoards(std::ostream &out) {
     drawLevel(out);
     drawScore(out);
     drawHorizontalLine(out);
@@ -22,37 +23,61 @@ void TextDisplay::drawBoards(std::ostream &out) {
     drawNext(out);
 }
 
-void TextDisplay::drawLevel(std::ostream &out) {
+void GraphicsDisplay::drawLevel(std::ostream &out) {
+    string spaces;
+    for (int i=0;i<=boards[0].getWidth()-6;++i) {
+	spaces += " ";
+    }
     for (int i = 0; i < boards.size(); ++i) {
-        if (i != 0) {
-            out << setw(8);
+        string level; 
+	istringstream iss {board[i].getLevel()};
+	iss >> level;
+        if (i == 0) {
+            xw->drawString(0,0, "Level:" + spaces + level);
+	} else {
+	    xw->drawString(i*boards[i].getWidth+8,0,"Level:" + spaces + level);
         }
-        out << "Level:" << setw(boards[0].getWidth()-6) << boards[i]->getLevel();
     }
     out << endl;
 }
 
-void TextDisplay::drawScore(std::ostream &out) {
+void GraphicsDisplay::drawScore(std::ostream &out) {
+    string spaces;
+    for (int i=0;i<=boards[0].getWidth()-6;++i) {
+	spaces += " ";
+    }
     for (int i = 0; i < boards.size(); ++i) {
-        if (i != 0) {
-            out << setw(8);
+        string score; 
+	istringstream iss {board[i].getScore()};
+	iss >> score;
+        if (i == 0) {
+            xw->drawString(0,1, "Level:" + spaces + score);
+	} else {
+	    xw->drawString(i*boards[i].getWidth+8,1,"Level:" + spaces + score);
         }
-        out << "Score:" << setw(boards[0].getWidth()-6) << boards[i]->getScore();
     }
     out << endl;
 }
 
-void TextDisplay::drawHorizontalLine(std::ostream &out) {
+void GraphicsDisplay::drawHorizontalLine(std::ostream &out, size_t y) {
+    string dashes;
+    for (int i=0;i<=boards[0].getWidth();++i) {
+	dashes += " ";
+    }
     for (int i = 0; i < boards.size(); ++i) {
-        if (i != 0) {
-            out << setw(8);
+        string score; 
+	istringstream iss {board[i].getScore()};
+	iss >> score;
+        if (i == 0) {
+            xw->drawString(0,y,dashes);
+	} else {
+	    xw->drawString(i*boards[i].getWidth+8,y, dashes);
         }
-        for (int j=0;j<boards[0].getWidth();++j) {
-	    out << "-";
-	}
     }
     out << endl;
 }
+
+// Will revise a bit later
 
 void TextDisplay::drawGrid(std::ostream &out) {
     int boardHeight = boards[0].getHeight() + 3;
@@ -78,6 +103,8 @@ void TextDisplay::drawGrid(std::ostream &out) {
         out << endl;
     }
 }
+
+// Will revise a bit later
 
 void TextDisplay::drawNext(std::ostream &out) {
     int boardHeight = boards[0].getHeight() + 3;
@@ -115,3 +142,4 @@ std::ostream &operator<<(std::ostream &out, const TextDisplay &td) {
     drawBoards(out);
     return out;
 }
+
