@@ -31,6 +31,15 @@ Command InputReader::readCommand(bool special) {
     string enteredCommand;
     iss >> enteredCommand;
 
+    if (special) {
+        for (int i=0;i<validCommands.size();++i) {
+            if (validCommands[i].find(enteredCommand) == 0 && IsIn(specialCommands, validCommands[i])) {
+                return Command {static_cast<CommandType>(i), numToRepeat};
+            }
+        }
+        return Command {INVALID};
+    }
+
     if (IsIn(blockShapes, enteredCommand)) {
         return Command {ChangePiece, enteredCommand};
     }
@@ -50,9 +59,7 @@ Command InputReader::readCommand(bool special) {
     if (count != 1) {
         return Command {INVALID};
     } else {
-        if (IsIn(specialCommands, realCommand)) {
-            return Command {static_cast<CommandType>(index), true, numToRepeat};
-        } else if (IsIn(needFileCommands, realCommand)) {
+        if (IsIn(needFileCommands, realCommand)) {
             string file;
             iss >> file;
             return Command {static_cast<CommandType>(index), file};
