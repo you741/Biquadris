@@ -23,6 +23,9 @@ public:
     int getLowest() const;
     int getLeftmost() const;
     void setCoords(PieceCoords* newCoords);
+    void setLowest(int y = 0); // sets the lowest point for the piece only if it is below that point
+    void setRightmost(int x = 14); // sets rightmost point for the piece only if it passes that point
+    void setLeftmost(int x = 0); // sets leftmost point for the piece only if it is before that point
     PieceCoords* rotatePiece(bool clockwise = true) const; // returns coordinates that would've been gotten by rotating the piece
     PieceCoords* movePiece(int right = 0, int down = 0) const; // returns the coordinates that would've been gotten by moving the piece
     bool hasCoord(std::pair<int,int> p) const; // returns whether the piece has the coordinate or not

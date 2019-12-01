@@ -70,11 +70,41 @@ int Piece::getLowest() const {
 }
 
 int Piece::getLeftmost() const {
-    return corrds->getLeftmost();
+    return coords->getLeftmost();
+}
+
+void Piece::setLowest(int y) { // sets the lowest point for the piece
+    vector<pair<int,int>> newBlocks;
+    if(getLowest() < y) {
+        for(const auto &p: getBlocks()) { // moves everything to match
+            newBlocks.emplace_back(Block(make_pair(p.first, p.second + (y - getLowest()))));
+        }
+    }
+    this->coords.reset(new PieceCoords(newBlocks)); // resets the coordinates to the new Piece
+}
+
+void Piece::setRightmost(int x) { // sets the rightmost point for the piece
+    vector<pair<int,int>> newBlocks;
+    if(getLeftmost() + getWidth() - 1 > x) {
+        for(const auto &p: getBlocks()) { // moves everything to match
+            newBlocks.emplace_back(Block(make_pair(p.first - (getLeftmost() + getWidth() - 1 - x), p.second)));
+        }
+    }
+    this->coords.reset(new PieceCoords(newBlocks)); // resets the coordinates to the new Piece
+}
+
+void Piece::setLeftmost(int x) { // sets the leftmost point for the piece
+    vector<pair<int,int>> newBlocks;
+    if(getLeftmost() < x) {
+        for(const auto &p: getBlocks()) { // moves everything to match
+            newBlocks.emplace_back(Block(make_pair(p.first + (x - getLeftmost())), p.second)));
+        }
+    }
+    this->coords.reset(new PieceCoords(newBlocks)); // resets the coordinates to the new Piece
 }
 
 void Piece::setCoords(PieceCoords* pc) {
-    this->coords = unique_ptr<PieceCoords>(pc); // takes ownership of the new coordinates. The old one is destroyed
+    this->coords.reset(pc); // takes ownership of the new coordinates. The old one is destroyed
 }
 
 PieceCoords* Piece::rotatePiece(bool clockwise) const { // returns coordinates the piece would have if it was rotated either clockwise or counterclockwise

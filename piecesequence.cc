@@ -94,6 +94,6 @@ Piece* PieceSequence::getPiece() { // generates a piece based on random and the 
     }
     return new Piece(static_cast<BlockType>(nextBlockType), 0, HEIGHT - 1, level->getLevel());
 }
-void PieceSequence::setFile(std::string filename){
+void PieceSequence::setFile(string filename){
     file = ifstream(filename);
 } // sets the file stream
