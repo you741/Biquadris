@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include "boardinfo.h"
 #include "command.h"
 #include "cell.h"
 #include "piecesequence.h"
@@ -33,7 +34,7 @@ class Board {
     void removeFullRowsAndAddPoints();
     void getNextPiece(); // sets curPiece to nextPiece and gets the next piece
 public:
-    Board(std::string filename, int lvl = 0);
+    Board(bool hasSeed, int seed, std::string filename, int lvl = 0);
     void applyCommand(Command c);
     void setLevel(int lvl);
     // getters

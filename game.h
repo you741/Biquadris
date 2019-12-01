@@ -1,7 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <utility>
 #include <vector>
+#include <iostream>
 #include "board.h"
 #include "inputreader.h"
 #include "graphicsdisplay.h"
@@ -18,15 +20,15 @@ class Game{
     // unique_ptr<InputReader> input; // Old because of sequence command
     int whoseTurn = 0;
     int hiScore = 0;
-    unique_ptr<GraphicsDisplay> graphics;
-    unique_ptr<TextDisplay> td;
+    std::unique_ptr<GraphicsDisplay> graphics;
+    std::unique_ptr<TextDisplay> td;
   public:
     Game(CommandArgs ca);
     // The core loop of the game, where input is read until a winner is decided
-    void readInput(istream &in);
+    void readInput(std::istream &in);
     void nextTurn();
     bool hasWon();
     int returnWinner();
-    Board getBoard(int target);
+    Board& getBoard(int target);
 };
 #endif

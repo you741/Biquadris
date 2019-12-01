@@ -33,28 +33,28 @@ void Board::movePiece(int right, int down) { // tries to move the piece, if it i
     } // otherwise it does not get moved
 }
 
-// TODO: IMPLEMENT ALL THESE
-    bool doesCollide(PieceCoords* pc);
-    void removeFullRowsAndAddPoints();
-    void getNextPiece(); // sets curPiece to nextPiece and gets the next piece
-public:
-    Board(std::string filename, int lvl = 0);
-    void applyCommand(Command c);
-    void setLevel(int lvl);
-    // getters
-    int getTurn() const;
-    Piece* getCurPiece() const;
-    Piece* getNextPiece() const;
-    std::vector<std::vector<Cell>> &getGrid() const;
-    bool getHeavy() const;
-    bool getBlind() const;
-    int getLevel() const; // returns level number rather than whole level class, this is enough information for Game
-    bool getSpecial() const;
-    bool getLost() const;
-    int getScore() const;
-    BoardInfo getInfo() const;
-    // TODO: need to make attach later
+// // TODO: IMPLEMENT ALL THESE
+//     bool doesCollide(PieceCoords* pc);
+//     void removeFullRowsAndAddPoints();
+//     void getNextPiece(); // sets curPiece to nextPiece and gets the next piece
+// public:
+//     Board(std::string filename, int lvl);
+//     void applyCommand(Command c);
+//     void setLevel(int lvl);
+//     // getters
+//     int getTurn() const;
+//     Piece* getCurPiece() const;
+//     Piece* getNextPiece() const;
+//     std::vector<std::vector<Cell>> &getGrid() const;
+//     bool getHeavy() const;
+//     bool getBlind() const;
+//     int getLevel() const; // returns level number rather than whole level class, this is enough information for Game
+//     bool getSpecial() const;
+//     bool getLost() const;
+//     int getScore() const;
+//     BoardInfo getInfo() const;
+//     // TODO: need to make attach later
 
-    //setters
-    void setCurPiece(Piece *p);
-    void setSpecial(bool special);
+//     //setters
+//     void setCurPiece(Piece *p);
+//     void setSpecial(bool special);

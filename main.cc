@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Create and run game
-    Game(ca);
-    Game.readInput(cin);
+    Game g = Game{ca};
+    g.readInput(cin);
 
 }

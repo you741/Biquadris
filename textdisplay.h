@@ -2,16 +2,21 @@
 #define TEXTDISPLAY_H
 #include <iostream>
 #include <vector>
-#include "observer.h"
+// #include "observer.h"
 #include "boardstate.h"
 #include "boardinfo.h"
 class Board;
 
 class TextDisplay {
   std::vector<Board*> boards;
-
+  void drawLevel(std::ostream& out);
+  void drawScore(std::ostream& out);
+  void drawGrid(std::ostream& out);
+  void drawNext(std::ostream& out);
  public:
-  TextDisplay(int n);
+  TextDisplay(const std::vector<Board> &bs);
+  void drawBoards(std::ostream& out);
+
 
 //   friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);
 };

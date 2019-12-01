@@ -1,12 +1,16 @@
 #ifndef BOARD_INFO
 #define BOARD_INFO 
-#include <stddef> 
+#include <vector>
+#include <stddef.h> 
+#include "piececoords.h"
+#include "cell.h"
+#include "level.h"
 
 struct BoardInfo {
     bool blind;
     int score;
     PieceCoords pc;
-    vector<std::vector<Cell>> grid;
+    std::vector<std::vector<Cell>> grid;
     Level level;
 };
 

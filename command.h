@@ -20,6 +20,7 @@ enum CommandType: int { // enum for different command types
     Blind,
     ChangePiece,
     EndOfFile,
+    Drop,
     INVALID
 };
 

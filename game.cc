@@ -15,7 +15,7 @@ Game::Game(CommandArgs ca) {
     // if ca.scriptfile1 is "", then there is no custom scriptfile
     boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile1, ca.startLevel});
     boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile2, ca.startLevel});
-    graphics = make_unique<GraphicsDisplay>();
+    graphics = make_unique<GraphicsDisplay>(boards);
     td = make_unique<TextDisplay>(boards);
 }
 
@@ -25,12 +25,12 @@ void Game::readInput(istream &in) {
     while (!hasWon()) {
         //Get the new command and apply it to curBoard
         Board &curBoard = boards[whoseTurn];
-        Command &c = input.readCommand(false);
+        Command c = input->readCommand(false);
 
 
         // Either quit if it is coming from user
         //  or the file is done creating inputs
-        if (c.commandType == CommandType::EOF) {
+        if (c.commandType == CommandType::EndOfFile) {
             return;
         }
         // If command is Sequence, must start reading from the file instead
@@ -46,17 +46,17 @@ void Game::readInput(istream &in) {
 
 
         // It is a normal command that is applied like usual
-        curBoard.apply(c);
+        curBoard.applyCommand(c);
 
         // If it is dropped, check if any special actions are triggered.
         //  Switch turns 
         if (c.commandType == CommandType::Drop) {
             if (curBoard.getSpecial()) {
-                Command &sc = input.readCommand(true);
+                Command sc = input->readCommand(true);
                 //Apply the special command to other board
                 for (int i = 0; i < numBoards; ++i) {
                     if (i != whoseTurn) {
-                        sc.apply(boards[i]);
+                        boards[i].applyCommand(sc);
                     }
                 }
             }
@@ -75,7 +75,7 @@ void Game::nextTurn() {
 bool Game::hasWon() {
     int alive = 0;
     for (int i = 0; i < numBoards; ++i) {
-        if (!boards[i].lost) {
+        if (!boards[i].getLost()) {
             ++alive;
         }
     }
@@ -85,13 +85,14 @@ bool Game::hasWon() {
 
 int Game::returnWinner() {
     for (int i = 0; i < numBoards; ++i) {
-        if (!boards[i].lost) {
+        if (!boards[i].getLost()) {
             return i;
         }
     }
+    return -1;
 }
 
-Board Game::getBoard(int target) {
+Board& Game::getBoard(int target) {
     return boards[target];
 }
 
