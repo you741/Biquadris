@@ -36,6 +36,13 @@ Command InputReader::readCommand(bool special) {
     if (special) { // forces command to be special, otherwise invalid
         for (int i=0;i<validCommands.size();++i) {
             if (validCommands[i].find(enteredCommand) == 0 && IsIn(specialCommands, validCommands[i])) {
+                if (validCommands[i] == "force") {
+                    string block;
+                    if (!(iss >> block)) {
+                        return Command {INVALID};
+                    }
+                    return Command {static_cast<CommandType>(i), static_cast<BlockType>(block[0])};
+                }
                 return Command {static_cast<CommandType>(i), numToRepeat};
             }
         }
@@ -61,9 +68,13 @@ Command InputReader::readCommand(bool special) {
     if (count != 1) {
         return Command {INVALID};
     } else {
-        if (IsIn(needFileCommands, realCommand)) {
+        if (IsIn(specialCommands, realCommand)) {
+            return Command {INVALID};
+        } else if (IsIn(needFileCommands, realCommand)) {
             string file;
-            iss >> file;
+            if (iss >> file) {
+                return Command {INVALID};
+            }
             return Command {static_cast<CommandType>(index), file};
         } else if (IsIn(unrepeatableCommands, realCommand)) {
             return Command {static_cast<CommandType>(index)};
