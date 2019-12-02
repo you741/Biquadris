@@ -91,12 +91,12 @@ PieceCoords* Piece::rotatePiece(bool clockwise) const { // returns coordinates t
     if(clockwise) {
         for(const auto &p: coords->getBlocks()) { // goes through every block and alters its x and y coordinates to rotate it clockwise
             int newX = leftmost + (p.second - lowest); // new X is based on old y and vice versa, we work with everything relative to bottom-left
-            int newY = lowest + newHeight - (p.first - leftmost);
+            int newY = lowest + newHeight - 1 - (p.first - leftmost);
             newBlocks.emplace_back(make_pair(newX,newY));
         }
     } else {
         for(const auto &p: coords->getBlocks()) { // goes through every block and alters its x and y coordinates to rotate it counterclockwise
-            int newX = leftmost + (lowest + coords->getHeight() - p.second);
+            int newX = leftmost + (lowest + coords->getHeight() - 1 - p.second);
             int newY = lowest + (p.first - leftmost);
             newBlocks.emplace_back(make_pair(newX,newY));
         }

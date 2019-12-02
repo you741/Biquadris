@@ -32,8 +32,8 @@ bool Board::rotatePiece(bool clockwise) { // tries to rotate the piece, if it is
 bool Board::movePiece(int right, int down) { // tries to move the piece, if it is not allowed we do not move it
     unique_ptr<PieceCoords> mpc(curPiece->movePiece(right, down)); // moved piece coordinates
     if(!doesCollide(mpc.get())) { // if it doesn't collide, we set the coordinates
-        this->curPiece->setCoords(move(mpc));
-	return true; // successful move
+        curPiece->setCoords(move(mpc));
+        return true; // successful move
     } // otherwise do nothing
     return false; // failed move
 }
@@ -96,7 +96,16 @@ void Board::setNextPiece() { // sets curPiece to nextPiece and gets the next pie
 }
 
 void Board::drop() { // drops the piece to the lowest possible point
-    while(movePiece(0,1)){} // moves down as much as possible
+    while(true){ // moves down as much as possible
+        bool moved = movePiece(0,1);
+        if(!moved) {
+            break;
+        }
+    }
+    if(doesCollide(curPiece->getCoords(),true)) {
+        lost = true; // we lose if we dropped the piece off the board
+        return;
+    }
     vector<Block*> newBlocks = curPiece->makeBlocks();
     for(size_t i = 0;i < newBlocks.size();++i) { // moves the actual blocks on the board
         grid[newBlocks[i]->getRow()][newBlocks[i]->getCol()].setBlock(newBlocks[i]);
@@ -152,9 +161,9 @@ void Board::applyCommand(const Command &c) { // applies the command
         }
         heavyFall();
     } else if (c.commandType == CommandType::LevelUp) { // moves level up
-        setLevel(max(MAX_LEVEL,level->getLevel() + c.rep)); // increases level by rep amount
+        setLevel(min(MAX_LEVEL,level->getLevel() + c.rep)); // increases level by rep amount
     } else if (c.commandType == CommandType::LevelDown) {
-        setLevel(min(0, level->getLevel() - c.rep));
+        setLevel(max(0, level->getLevel() - c.rep));
     } else if (c.commandType == CommandType::NoRandom) {
         if(level->getLevel() == 3 || level->getLevel() == 4) {
             // needs to be level 3 or 4 to remove the random
@@ -173,7 +182,8 @@ void Board::applyCommand(const Command &c) { // applies the command
     } else if (c.commandType == CommandType::Sequence) {
         // handled in Game, should do nothing here
     } else if (c.commandType == CommandType::Restart) {
-        // this should also be handled in game, not here
+        // clear the board
+
     } else if (c.commandType == CommandType::Heavy) {
         specialHeavy = true;
     } else if (c.commandType == CommandType::Force) { // sets a new piece, could lose
@@ -193,7 +203,7 @@ void Board::applyCommand(const Command &c) { // applies the command
         // do nothing, Game handles this
     } else if (c.commandType == CommandType::Drop) {
         special = false; // we never get a special action unless we clear at least 2 rows, if we do the Drop command should set it to true
-	dropped = true;
+        dropped = true;
         for(int i = 0;i < c.rep && !lost;++i){
             drop(); // drops piece to the bottom, removes all full rows, moves turn up by 1
             if(lost) break; // no need to continue if we lost
