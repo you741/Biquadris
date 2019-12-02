@@ -46,7 +46,7 @@ void Board::heavyFall() { // handles the heavy effect, if there is one
 void Board::specialHeavyFall() { // handles falling by special heavy effect
     if(specialHeavy) { // tries to move down by 2, runs a Drop command if we can't
         if(!movePiece(0,2)) { // if we didn't succeed in moving, we apply drop
-            applyCommand(CommandType::Drop);
+            applyCommand(Command(CommandType::Drop));
         }
     }
 }
@@ -239,10 +239,10 @@ int Board::getTurn() const {
     return turn;
 }
 Piece* Board::getCurPiece() const {
-    return curPiece;
+    return curPiece.get();
 }
 Piece* Board::getNextPiece() const {
-    return nextPiece;
+    return nextPiece.get();
 }
 const std::vector<std::vector<Cell>>& Board::getGrid() const {
     return grid;

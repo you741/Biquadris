@@ -9,6 +9,7 @@
 #include "cell.h"
 #include "piecesequence.h"
 #include "piececoords.h"
+#include "piece.h"
 
 const int MAX_LEVEL = 4; // max level
 
