@@ -13,31 +13,31 @@ Piece::Piece(BlockType b, int x, int y, int level, bool heavy) points{calculateP
     if (b == BlockType::I) {
         this->colour = Xwindow::Orange;
         this->sym = 'I';
-        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>(make_pair(x,y), make_pair(x+1,y), make_pair(x+2,y), make_pair(x+3,y))});
+        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>{make_pair(x,y), make_pair(x+1,y), make_pair(x+2,y), make_pair(x+3,y))});
     } else if (b == BlockType::J) {
         this->colour = Xwindow::Magenta;
         this->sym = 'J';
-        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>(make_pair(x,y+1), make_pair(x,y), make_pair(x+1,y), make_pair(x+2,y))});
+        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>{make_pair(x,y+1), make_pair(x,y), make_pair(x+1,y), make_pair(x+2,y))});
     } else if (b == BlockType::L) {
         this->colour = Xwindow::DarkGreen;
         this->sym = 'L';
-        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>(make_pair(x,y), make_pair(x+1,y), make_pair(x+2,y), make_pair(x+2,y+1))});
+        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>{make_pair(x,y), make_pair(x+1,y), make_pair(x+2,y), make_pair(x+2,y+1))});
     } else if (b == BlockType::O) {
         this->colour = Xwindow::Green;
         this->sym = 'O';
-        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>(make_pair(x,y), make_pair(x+1,y), make_pair(x+1,y+1), make_pair(x,y+1))})
+        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>{make_pair(x,y), make_pair(x+1,y), make_pair(x+1,y+1), make_pair(x,y+1))})
     } else if (b == BlockType::S) {
         this->colour = Xwindow::Red;
         this->sym = 'S';
-        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>(make_pair(x,y), make_pair(x+1,y), make_pair(x+1,y+1), make_pair(x+2,y+1))});
+        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>{make_pair(x,y), make_pair(x+1,y), make_pair(x+1,y+1), make_pair(x+2,y+1))});
     } else if (b == BlockType::T) {
         this->colour = Xwindow::Brown;
         this->sym = 'T';
-        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>(make_pair(x,y+1), make_pair(x+1,y+1), make_pair(x+2,y+1), make_pair(x+1,y))});
+        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>{make_pair(x,y+1), make_pair(x+1,y+1), make_pair(x+2,y+1), make_pair(x+1,y))});
     } else {
         this->colour = Xwindow::Cyan;
         this->sym = 'Z';
-        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>(make_pair(x+1,y), make_pair(x,y+1), make_pair(x+1,y+1), make_pair(x+2,y))});
+        this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>{make_pair(x+1,y), make_pair(x,y+1), make_pair(x+1,y+1), make_pair(x+2,y))});
     }
 }
 
@@ -139,6 +139,10 @@ PieceCoords* Piece::movePiece(int right, int down) const { // returns coordinate
         newBlocks.emplace_back(make_pair(p.first + right, p.second - down));
     }
     return new PieceCoords{newBlocks};
+}
+
+PieceCoords* Piece::getCoords() { // returns piece coords
+    return coords.get();
 }
 
 bool Piece::hasCoord(pair<int,int> p) const {

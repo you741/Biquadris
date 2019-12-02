@@ -30,6 +30,7 @@ public:
     void setLeftmost(int x = 0); // sets leftmost point for the piece only if it is before that point
     PieceCoords* rotatePiece(bool clockwise = true) const; // returns coordinates that would've been gotten by rotating the piece
     PieceCoords* movePiece(int right = 0, int down = 0) const; // returns the coordinates that would've been gotten by moving the piece
+    PieceCoords* getCoords();
     bool hasCoord(std::pair<int,int> p) const; // returns whether the piece has the coordinate or not
     std::vector<Block*> makeBlocks() const; // makes blocks out of the piece's coordinates
 };
