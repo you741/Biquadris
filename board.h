@@ -38,7 +38,7 @@ class Board {
     bool movePiece(int right = 0, int down = 0);
     void heavyFall(); // handles heavy effects
     void specialHeavyFall();
-    bool doesCollide(PieceCoords* pc);
+    bool doesCollide(PieceCoords* pc, bool checkUpperBound = false);
     void removeFullRowsAndAddPoints();
     void setNextPiece(); // sets curPiece to nextPiece and gets the next piece
     void drop(); // drops the piece

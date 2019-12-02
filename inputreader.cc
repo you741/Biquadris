@@ -15,11 +15,9 @@ Command InputReader::readCommand(bool special) {
     if (in.eof()) {
         return Command {EndOfFile};
     }
-
     string curline;
     getline(in, curline);
     istringstream iss {curline};
-
     int numToRepeat = 1;
     const vector<string> blockShapes = {"I", "J", "L", "O", "S", "Z", "T"},
         specialCommands = {"heavy", "force", "blind"},
@@ -27,12 +25,11 @@ Command InputReader::readCommand(bool special) {
         unrepeatableCommands = {"restart"};
 
     if (!(iss >> numToRepeat)) {
-        iss.clear();
+        numToRepeat = 1;
+	iss.clear();
     }
-
     string enteredCommand;
     iss >> enteredCommand;
-
     if (special) { // forces command to be special, otherwise invalid
         for (unsigned i=0;i<validCommands.size();++i) {
             if (validCommands[i].find(enteredCommand) == 0 && IsIn(specialCommands, validCommands[i])) {

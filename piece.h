@@ -24,7 +24,7 @@ public:
     int getLowest() const;
     int getLeftmost() const;
     bool isHeavy() const;
-    void setCoords(PieceCoords* newCoords);
+    void setCoords(std::unique_ptr<PieceCoords> &&newCoords);
     PieceCoords* rotatePiece(bool clockwise = true) const; // returns coordinates that would've been gotten by rotating the piece
     PieceCoords* movePiece(int right = 0, int down = 0) const; // returns the coordinates that would've been gotten by moving the piece
     PieceCoords* getCoords();

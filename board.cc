@@ -1,5 +1,6 @@
 #include "board.h"
 #include "piececoords.h"
+#include <iostream>
 
 using namespace std;
 
@@ -22,7 +23,7 @@ void Board::removeRowAndAddPoints(int r) { // MUST only be called if the row is 
 bool Board::rotatePiece(bool clockwise) { // tries to rotate the piece, if it is not allowed we do not rotate it
     unique_ptr<PieceCoords> rpc(curPiece->rotatePiece(clockwise)); // rotated piece coordinates
     if(!doesCollide(rpc.get())) { // if it doesn't collide, we set the coordinates
-        curPiece->setCoords(rpc.get());
+        curPiece->setCoords(move(rpc));
         return true; // successful rotate
     } // otherwise do nothing
     return false; // failed rotate
@@ -30,15 +31,25 @@ bool Board::rotatePiece(bool clockwise) { // tries to rotate the piece, if it is
 
 bool Board::movePiece(int right, int down) { // tries to move the piece, if it is not allowed we do not move it
     unique_ptr<PieceCoords> mpc(curPiece->movePiece(right, down)); // moved piece coordinates
+    cout << "Moved Piece Coordinates:" << endl;
+    for(auto p: mpc->getBlocks()){
+	    cout << p.first << "," << p.second << endl;
+    }
     if(!doesCollide(mpc.get())) { // if it doesn't collide, we set the coordinates
-        curPiece->setCoords(mpc.get());
-        return true; // successful move
+	cout << "Did not Collide" << endl;
+        this->curPiece->setCoords(move(mpc));
+	cout << "Printing ultimate piece coordinates" << endl;
+        for(auto p: this->curPiece.get()->getCoords()->getBlocks()) {
+		cout << p.first << "," << p.second << endl;
+	}
+	return true; // successful move
     } // otherwise do nothing
     return false; // failed move
 }
 
 void Board::heavyFall() { // handles the heavy effect, if there is one
-    if(curPiece->isHeavy()) { // if it is a heavy piece try to move down one
+    if(curPiece->isHeavy()) { // if it is a heavy piece try to move down onei
+	    cout << "was heavy" << endl;
         movePiece(0,1);
     }
 }
@@ -46,16 +57,17 @@ void Board::heavyFall() { // handles the heavy effect, if there is one
 void Board::specialHeavyFall() { // handles falling by special heavy effect
     if(specialHeavy) { // tries to move down by 2, runs a Drop command if we can't
         if(!movePiece(0,2)) { // if we didn't succeed in moving, we apply drop
+		cout << "was special heavy" << endl;
             applyCommand(Command(CommandType::Drop));
         }
     }
 }
 
-bool Board::doesCollide(PieceCoords* pc) {
+bool Board::doesCollide(PieceCoords* pc, bool checkUpperBound) {
     for(const auto &p: pc->getBlocks()) {
-        if(p.second < 0 || p.first < 0 || p.first >= width) { // if the coordinate is out of bounds, return true
+        if(p.second < 0 || p.first < 0 || p.first >= width || (p.second >= height && checkUpperBound)) { // if the coordinate is out of bounds, return true
             return true;
-        } else if (grid[p.second][p.first].getHasBlock()) { // if the coordinate is on a block, it is also true (it does collide)
+        } else if (p.second < height && grid[p.second][p.first].getHasBlock()) { // if the coordinate is on a block, it is also true (it does collide)
             return true;
         }
     }
@@ -121,6 +133,7 @@ Board::Board(bool hasSeed, int seed, string file0, int lvl): level{make_unique<L
 }
 
 void Board::applyCommand(const Command &c) { // applies the command
+    cout << c.commandType << endl;
     if(c.commandType == CommandType::MoveLeft) { // move left
         for(int i = 0;i < c.rep;++i) {// moves piece rep times to the left
             if (!movePiece(-1,0)) break; // breaks on failed move to save time
@@ -133,6 +146,10 @@ void Board::applyCommand(const Command &c) { // applies the command
         }
         heavyFall();
         specialHeavyFall();
+	cout << "Ey congratulations: " << endl;
+	for(auto p: curPiece->getCoords()->getBlocks()) {
+		cout << p.first << "," << p.second << endl;
+	}
     } else if (c.commandType == CommandType::MoveDown) { // move down
         for(int i = 0;i < c.rep;++i) {// moves piece rep times to the down
             if (!movePiece(0,1)) break; // breaks on failed move to save time
@@ -239,6 +256,10 @@ int Board::getTurn() const {
     return turn;
 }
 Piece* Board::getCurPiece() const {
+    cout << "What do we get" << endl;
+    for(auto p: this->curPiece->getCoords()->getBlocks()) {
+	cout << p.first << "," << p.second << endl;
+    }
     return curPiece.get();
 }
 Piece* Board::getNextPiece() const {
