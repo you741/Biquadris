@@ -1,5 +1,8 @@
+
 #include <iostream>
 #include <fstream>
+#include "textdisplay.h"
+
 #include "game.h"
 
 
@@ -15,9 +18,21 @@ Game::Game(CommandArgs ca) {
     // if ca.scriptfile1 is "", then there is no custom scriptfile
     boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile1, ca.startLevel});
     boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile2, ca.startLevel});
-    graphics = make_unique<GraphicsDisplay>(boards);
+
+    textOnly = ca.textOnly;
+    if (!textOnly) {
+        graphics = make_unique<GraphicsDisplay>(boards);
+    }
     td = make_unique<TextDisplay>(boards);
-    cout << "Built";
+
+    td->updateDisplay(cout);
+}
+
+void Game::updateDisplay(int id) {
+    td->updateDisplay(cout);
+    if (!textOnly) {
+        graphics->updateDisplay(id);
+    }
 }
 
 void Game::readInput(istream &in) {
@@ -48,7 +63,7 @@ void Game::readInput(istream &in) {
 
         // It is a normal command that is applied like usual
         curBoard.applyCommand(c);
-
+        updateDisplay(whoseTurn);
         // If it is dropped, check if any special actions are triggered.
         //  Switch turns 
         if (c.commandType == CommandType::Drop) {
@@ -58,6 +73,7 @@ void Game::readInput(istream &in) {
                 for (int i = 0; i < numBoards; ++i) {
                     if (i != whoseTurn) {
                         boards[i].applyCommand(sc);
+                        updateDisplay(i);
                     }
                 }
             }
@@ -70,6 +86,7 @@ void Game::readInput(istream &in) {
 void Game::nextTurn() {
     ++whoseTurn;
     whoseTurn %= numBoards;
+    cout << "Player" << whoseTurn << "'s Turn" << endl;
 }
 
 

@@ -13,7 +13,7 @@ TextDisplay::TextDisplay(vector<Board> &bs) {
     }
 };
 
-void TextDisplay::drawBoards(std::ostream &out) {
+void TextDisplay::updateDisplay(std::ostream &out) {
     drawLevel(out);
     drawScore(out);
     drawHorizontalLine(out);
