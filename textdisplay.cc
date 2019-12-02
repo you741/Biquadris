@@ -66,7 +66,7 @@ void TextDisplay::drawGrid(std::ostream &out) {
             Board *board = boards[i];
             bool blind = board->getBlind();
             for (int x = 0; x < boardWidth; ++x) {
-                if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11)) {
+                if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11))) {
                     out << "?";
                 } else if (board->getGrid()[y][x].getHasBlock()) {
                     out << board->getGrid()[y][x].getBlock()->getSym();
