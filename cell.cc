@@ -1,5 +1,19 @@
 #include "cell.h"
 
+Cell::Cell() {}
+Cell::Cell(Block *b): hasBlock{true}, block{b} {}
+Cell::Cell(const Cell &c): hasBlock{c.hasBlock}, block{new Block{*c.block}} {}
+Cell::Cell(Cell &&c): hasBlock{c.hasBlock}, block{std::move(c.block)} {}
+Cell& Cell::operator=(const Cell &c) {
+	hasBlock = c.hasBlock;
+	block.reset(new Block{*c.block});
+	return *this;
+}
+Cell& Cell::operator=(Cell &&c) {
+	hasBlock = c.hasBlock;
+	block = std::move(c.block);
+	return *this;
+}
 bool Cell::getHasBlock() const {
     return hasBlock;
 }

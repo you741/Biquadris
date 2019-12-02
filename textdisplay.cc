@@ -57,7 +57,6 @@ void TextDisplay::drawHorizontalLine(std::ostream &out) {
 void TextDisplay::drawGrid(std::ostream &out) {
     int boardHeight = boards[0]->getHeight() + 3;
     int boardWidth = boards[0]->getWidth();
-    
 
     for (int y = boardHeight - 1; y >= 0; --y) {
         for (int i = 0; i < boards.size(); ++i) {
@@ -65,11 +64,8 @@ void TextDisplay::drawGrid(std::ostream &out) {
                 out << setw(8);
             }
             Board board = boards[i];
-            bool blind = board->getBlind();
             for (int x = 0; x < boardWidth; ++x) {
-                if (blind) {
-                    out << "?";
-                } else if (board->getGrid()[boardHeight - y][x].getHasBlock()) {
+                if (board->getGrid()[boardHeight - y][x].getHasBlock()) {
                     out << board->getGrid()[y][x].getBlock().getSym();
                 } else if (board->getCurPiece().hasCoord(make_pair(y, x))) {
                     out << board->getCurPiece().getSym();

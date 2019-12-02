@@ -11,7 +11,7 @@ struct BoardInfo {
     int score;
     PieceCoords *pc;
     const std::vector<std::vector<Cell>> &grid;
-    Level level;
+    int level;
 };
 
 #endif

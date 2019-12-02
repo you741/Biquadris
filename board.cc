@@ -122,19 +122,19 @@ Board::Board(bool hasSeed, int seed, string file0, int lvl): level{make_unique<L
 
 void Board::applyCommand(const Command &c) { // applies the command
     if(c.commandType == CommandType::MoveLeft) { // move left
-        for(int i = 0;i < rep;++i) {// moves piece rep times to the left
+        for(int i = 0;i < c.rep;++i) {// moves piece rep times to the left
             if (!movePiece(-1,0)) break; // breaks on failed move to save time
         }
         heavyFall();
         specialHeavyFall();
     } else if (c.commandType == CommandType::MoveRight) { // move right
-        for(int i = 0;i < rep;++i) {// moves piece rep times to the right
+        for(int i = 0;i < c.rep;++i) {// moves piece rep times to the right
             if (!movePiece(1,0)) break; // breaks on failed move to save time
         }
         heavyFall();
         specialHeavyFall();
     } else if (c.commandType == CommandType::MoveDown) { // move down
-        for(int i = 0;i < rep;++i) {// moves piece rep times to the down
+        for(int i = 0;i < c.rep;++i) {// moves piece rep times to the down
             if (!movePiece(0,1)) break; // breaks on failed move to save time
         }
         heavyFall();
@@ -155,12 +155,12 @@ void Board::applyCommand(const Command &c) { // applies the command
     } else if (c.commandType == CommandType::NoRandom) {
         if(level->getLevel() == 3 || level->getLevel() == 4) {
             // needs to be level 3 or 4 to remove the random
-            seq->setFile(file);
+            seq->setFile(c.file);
         }
     } else if (c.commandType == CommandType::NoRandom) {
         if(level->getLevel() == 3 || level->getLevel() == 4) {
             // needs to be level 3 or 4 to remove the random
-            seq->setFile(file);
+            seq->setFile(c.file);
         }
     } else if (c.commandType == CommandType::Random) {
         if(level->getLevel() == 3 || level->getLevel() == 4) {
@@ -180,7 +180,7 @@ void Board::applyCommand(const Command &c) { // applies the command
         }
     } else if (c.commandType == CommandType::Blind) {
         blind = true;
-    } else if (c.commandType == CommmandType::ChangePiece) {
+    } else if (c.commandType == CommandType::ChangePiece) {
         unique_ptr<Piece> newPiece(new Piece(c.b, 0, height - 1, level->getLevel(), heavy));
         if(!doesCollide(newPiece->getCoords())) {
             // if it doesn't collide we transfer ownership to our curPiece
@@ -200,11 +200,11 @@ void Board::applyCommand(const Command &c) { // applies the command
                         lost = true;
                         break;
                     }
-                    for(int i = 0;i < HEIGHT;++i) {
+                    for(int i = 0;i < height;++i) {
                         // tries the middle of the grid and tries place a block there start at the bottom
                         if(!grid[i][int(width/2)].getHasBlock()) {
                             // if we find one with no block, we place it here
-                            grid[i][int(width/2)].setBlock(Block(make_pair(int(width/2),i),0,Xwindow::Yellow,'|'));
+                            grid[i][int(width/2)].setBlock(new Block(make_pair(int(width/2),i),0,Xwindow::Yellow,'|'));
                             break;
                         }
                     }
@@ -272,7 +272,7 @@ int Board::getHeight() const {
     return height;
 }
 BoardInfo Board::getInfo() const {
-    return BoardInfo{blind,score,pc,grid,level};
+    return BoardInfo{blind,score,curPiece->getCoords(),grid,level->getLevel()};
 }
 // TODO: need to make attach later
 

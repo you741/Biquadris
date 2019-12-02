@@ -3,7 +3,7 @@
 
 using namespace std;
 
-PieceSequence::PieceSequence(int lvl, bool hasSeed = false, int seed = 1, int height): level{new Level{lvl}}, hasSeed{hasSeed}, seed{seed}, height{height} {
+PieceSequence::PieceSequence(int lvl, bool hasSeed, int seed, int height): level{new Level{lvl}}, hasSeed{hasSeed}, seed{seed}, height{height} {
     this->random = level->isRandom(); // default value of random
     if(hasSeed){ // sets the seed if we have it
         srand(seed);
@@ -11,7 +11,7 @@ PieceSequence::PieceSequence(int lvl, bool hasSeed = false, int seed = 1, int he
         srand(time(NULL)); // sets the seed to null time by default
     }
 }
-PieceSequence::PieceSequence(std::string filename, int lvl, bool hasSeed = false, int seed = 1, int height): filename{filename}, file{filename}, level{new Level{lvl}}, hasSeed{hasSeed}, seed{seed}, height{height} {
+PieceSequence::PieceSequence(std::string filename, int lvl, bool hasSeed, int seed, int height): filename{filename}, file{filename}, level{new Level{lvl}}, hasSeed{hasSeed}, seed{seed}, height{height} {
     this->random = level->isRandom();
     if(hasSeed){ // sets the seed if we have it
         srand(seed);
