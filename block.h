@@ -22,6 +22,8 @@ class Block {
     int numNeighbours; // number of neighbours we have
 public:
     Block(std::pair<int,int> loc, int points, int colour, char sym);
+    int getRow() const;
+    int getCol() const;
     int getPoints() const;
     int getColour() const;
     char getSym() const;

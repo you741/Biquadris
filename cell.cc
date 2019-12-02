@@ -6,6 +6,9 @@ bool Cell::getHasBlock() const {
 Block* Cell::getBlock() const {
     return block.get();
 }
+void Cell::setBlock(Block *b) {
+    block.reset(b);
+}
 int Cell::removeBlockAndGetPoints() {
     if(hasBlock) {
         hasBlock = false; // sets hasBlock to false

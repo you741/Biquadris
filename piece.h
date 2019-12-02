@@ -11,20 +11,22 @@ class Piece {
     int colour; // colour based on Xwindow's enum
     char sym; // symbol for text display
     int points; // points to give when this piece is cleared
+    bool heavy = false;
 
     int calculatePoints(int level) const; // calculate points the piece is worth based on level
 public:
-    Piece(BlockType b, int x, int y, int level); // creates a piece based on a block type, a bottom left corner (x and y) and a level (for the score)
+    Piece(BlockType b, int x, int y, int level, bool heavy = false); // creates a piece based on a block type, a bottom left corner (x and y) and a level (for the score)
     int getColour() const;
     char getSym() const;
-    std::vector<std::pair<int,int>> &getBlocks() const;
+    const std::vector<std::pair<int,int>> &getBlocks() const;
     int getWidth() const;
     int getHeight() const;
     int getLowest() const;
     int getLeftmost() const;
+    bool isHeavy() const;
     void setCoords(PieceCoords* newCoords);
     void setLowest(int y = 0); // sets the lowest point for the piece only if it is below that point
-    void setRightmost(int x = 14); // sets rightmost point for the piece only if it passes that point
+    void setRightmost(int x = 10); // sets rightmost point for the piece only if it passes that point
     void setLeftmost(int x = 0); // sets leftmost point for the piece only if it is before that point
     PieceCoords* rotatePiece(bool clockwise = true) const; // returns coordinates that would've been gotten by rotating the piece
     PieceCoords* movePiece(int right = 0, int down = 0) const; // returns the coordinates that would've been gotten by moving the piece

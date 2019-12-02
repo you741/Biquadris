@@ -12,7 +12,7 @@ class PieceCoords { // this class stores the coordinates of every block in the p
   int leftmost;
  public:
   PieceCoords(std::vector<std::pair<int,int>> blocks);
-  std::vector<std::pair<int,int>> &getBlocks() const;
+  const std::vector<std::pair<int,int>> &getBlocks() const;
   int getWidth() const;
   int getHeight() const;
   int getLowest() const;

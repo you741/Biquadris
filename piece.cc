@@ -9,7 +9,7 @@ int Piece::calculatePoints(int level) const {
     return (level + 1) * (level + 1);
 }
 
-Piece::Piece(BlockType b, int x, int y, int level) points{calculatePoints(level)} { // generates the fields based on the block type
+Piece::Piece(BlockType b, int x, int y, int level, bool heavy) points{calculatePoints(level)}, heavy{heavy} { // generates the fields based on the block type
     if (b == BlockType::I) {
         this->colour = Xwindow::Orange;
         this->sym = 'I';
@@ -53,7 +53,7 @@ PieceCoords* Piece::getCoords() const { // returns a raw pointer, the actual coo
     return coords.get();
 }
 
-vector<pair<int,int>>& Piece::getBlocks() const {
+const vector<pair<int,int>>& Piece::getBlocks() const {
     return coords->getBlocks();
 }
 
@@ -71,6 +71,10 @@ int Piece::getLowest() const {
 
 int Piece::getLeftmost() const {
     return coords->getLeftmost();
+}
+
+bool Piece::isHeavy() const {
+    return heavy;
 }
 
 void Piece::setLowest(int y) { // sets the lowest point for the piece

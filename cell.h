@@ -9,6 +9,7 @@ class Cell { // a cell can either hold a block or it can be empty
 public:
     bool getHasBlock() const;
     Block* getBlock() const;
+    void setBlock(Block* b);
     int removeBlockAndGetPoints(); // removes the block, if it's the last of its original piece then we get points
 };
 #endif // CELL_H

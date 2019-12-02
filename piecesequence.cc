@@ -1,22 +1,33 @@
 #include "piecesequence.h"
-#include "board.h"
 #include "block.h"
 
 using namespace std;
 
-PieceSequence::PieceSequence(int lvl): level{new Level{lvl}} {
+PieceSequence::PieceSequence(int lvl, bool hasSeed = false, int seed = 1, int height): level{new Level{lvl}}, hasSeed{hasSeed}, seed{seed}, height{height} {
     this->random = level->isRandom(); // default value of random
+    if(hasSeed){ // sets the seed if we have it
+        srand(seed);
+    } else {
+        srand(time(NULL)); // sets the seed to null time by default
+    }
 }
-PieceSequence::PieceSequence(std::string filename, int lvl): file{filename}, level{new Level{lvl}} {
-    this->random = level->isRandom(); // sets if the level should be random or not (default value)
+PieceSequence::PieceSequence(std::string filename, int lvl, bool hasSeed = false, int seed = 1, int height): filename{filename}, file{filename}, level{new Level{lvl}}, hasSeed{hasSeed}, seed{seed}, height{height} {
+    this->random = level->isRandom();
+    if(hasSeed){ // sets the seed if we have it
+        srand(seed);
+    } else {
+        srand(time(NULL)); // sets the seed to null time by default
+    }
 }
-PieceSequence::PieceSequence(bool random, int lvl): random{random}, level{new Level{lvl}} {}
 
 Piece* PieceSequence::getPiece() { // generates a piece based on random and the Level and places it on the top left corner
     // all the probabilities are here
     char nextBlockType; // the next Piece type, it will create it based on a BlockType
     if(level->getLevel() == 0 || !random) { // it needs to be nonrandom here (level 0 has to be nonrandom)
-        file >> nextBlockType;
+        if(file.eof()) { // if we could not read the file (eof), then we restart the file stream
+            file = ifstream(filename);
+            file >> nextBlockType;
+        }
     } else { // then it is a random generation
         int r = rand();
         // LEVEL 1
@@ -92,8 +103,20 @@ Piece* PieceSequence::getPiece() { // generates a piece based on random and the 
             }
         }
     }
-    return new Piece(static_cast<BlockType>(nextBlockType), 0, HEIGHT - 1, level->getLevel());
+    return new Piece(static_cast<BlockType>(nextBlockType), 0, height - 1, level->getLevel(), level->isHeavy());
 }
+
+void PieceSequence::setLevel(int lvl) { // sets the level and other stuff
+    level->setLevel(lvl);
+    random = level->isRandom();
+}
+
 void PieceSequence::setFile(string filename){
-    file = ifstream(filename);
+    this->filename = filename;
+    this->file = ifstream(filename);
+    this->random = false; // when we set a file, we just set random to false since we want to use the file now
 } // sets the file stream
+
+void PieceSequence::setRandom(bool random){
+    this->random = random;
+}

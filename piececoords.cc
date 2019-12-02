@@ -25,7 +25,7 @@ PieceCoords::PieceCoords(vector<pair<int,int>> blocks): blocks{blocks} {
     this->height = highest - lowest + 1;
 }
 
-vector<pair<int,int>>& PieceCoords::getBlocks() const {
+const vector<pair<int,int>>& PieceCoords::getBlocks() const {
     return blocks;
 }
 int PieceCoords::getWidth() const {

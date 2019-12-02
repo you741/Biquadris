@@ -2,6 +2,14 @@
 
 Block::Block(std::pair<int,int> loc, int points, int colour, char sym): loc{loc}, points{points}, colour{colour}, sym{sym}, numNeighbours{0} {}
 
+int Block::getRow() const {
+    return loc.second;
+}
+
+int Block::getCol() const {
+    return loc.first;
+}
+
 int Block::getPoints() const {
     return points;
 }

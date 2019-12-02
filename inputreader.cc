@@ -72,7 +72,7 @@ Command InputReader::readCommand(bool special) {
             return Command {INVALID};
         } else if (IsIn(needFileCommands, realCommand)) {
             string file;
-            if (iss >> file) {
+            if (!(iss >> file)) {
                 return Command {INVALID};
             }
             return Command {static_cast<CommandType>(index), file};
