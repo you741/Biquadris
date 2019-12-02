@@ -64,8 +64,11 @@ void TextDisplay::drawGrid(std::ostream &out) {
                 out << setw(8);
             }
             Board *board = boards[i];
+            bool blind = board->getBlind();
             for (int x = 0; x < boardWidth; ++x) {
-                if (board->getGrid()[boardHeight - y][x].getHasBlock()) {
+                if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11)) {
+                    out << "?";
+                } else if (board->getGrid()[y][x].getHasBlock()) {
                     out << board->getGrid()[y][x].getBlock()->getSym();
                 } else if (board->getCurPiece()->hasCoord(make_pair(y, x))) {
                     out << board->getCurPiece()->getSym();
@@ -80,7 +83,7 @@ void TextDisplay::drawGrid(std::ostream &out) {
 }
 
 void TextDisplay::drawNext(std::ostream &out) {
-    // int boardHeight = boards[0]->getHeight() + 3;
+    int boardHeight = boards[0]->getHeight() + 3;
     int boardWidth = boards[0]->getWidth();
 
     // Get height and width of the piececoord, then get the coordinate relatively
@@ -89,7 +92,7 @@ void TextDisplay::drawNext(std::ostream &out) {
         Board *board = boards[i];
         maxHeight = max(maxHeight, board->getNextPiece()->getHeight());
     }
-    for (int y = 0; y < maxHeight; ++y) {
+    for (int y = boardHeight - 1; y >= 0; --y) {
         for (unsigned i = 0; i < boards.size(); ++i) {
             if (i != 0) {
                 out << setw(8);
