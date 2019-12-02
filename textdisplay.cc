@@ -55,7 +55,8 @@ void TextDisplay::drawHorizontalLine(std::ostream &out) {
 }
 
 void TextDisplay::drawGrid(std::ostream &out) {
-    int boardHeight = boards[0]->getHeight() + 3;
+    int actualBoardHeight = boards[0]->getHeight();
+    int boardHeight = actualBoardHeight + 3;
     int boardWidth = boards[0]->getWidth();
 
     for (int y = boardHeight - 1; y >= 0; --y) {
@@ -68,10 +69,12 @@ void TextDisplay::drawGrid(std::ostream &out) {
             for (int x = 0; x < boardWidth; ++x) {
                 if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11))) {
                     out << "?";
-                } else if (board->getGrid()[y][x].getHasBlock()) {
-                    out << board->getGrid()[y][x].getBlock()->getSym();
                 } else if (board->getCurPiece()->hasCoord(make_pair(y, x))) {
                     out << board->getCurPiece()->getSym();
+                } else if (y >= actualBoardHeight) {
+                    out << "*";
+                } else if (board->getGrid()[y][x].getHasBlock()) {
+                    out << board->getGrid()[y][x].getBlock()->getSym();
                 } else {
                     // change to space if this works
                     out << "*";
@@ -92,7 +95,7 @@ void TextDisplay::drawNext(std::ostream &out) {
         Board *board = boards[i];
         maxHeight = max(maxHeight, board->getNextPiece()->getHeight());
     }
-    for (int y = boardHeight - 1; y >= 0; --y) {
+    for (int y = maxHeight - 1; y >= 0; --y) {
         for (unsigned i = 0; i < boards.size(); ++i) {
             if (i != 0) {
                 out << setw(8);
@@ -113,8 +116,8 @@ void TextDisplay::drawNext(std::ostream &out) {
 }
 
 
-// // // Print the 2D char array
+// // Draw the board
 // std::ostream &operator<<(std::ostream &out, const TextDisplay &td) {
-//     drawBoards(out);
+//     this->drawBoards(out);
 //     return out;
 // }
