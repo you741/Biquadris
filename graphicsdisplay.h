@@ -8,18 +8,29 @@
 class Board;
 
 class GraphicsDisplay {
-    Xwindow *xw = nullptr; // owns an Xwindow object
-    std::vector<Board*> boards;
-    void drawLevel(std::ostream& out);
-    void drawScore(std::ostream& out);
-    void drawHorizontalLine(std::ostream& out);
-    void drawGrid(std::ostream& out);
-    void drawNext(std::ostream& out);
+
+    std::vector <Board*> boards;
+    std::vector <Xwindow*> xw;
+
+    const int leftIndent = 20;
+    const int topIndent = 20;
+    const int lineBreak = 15;
+    const int cellWidth = 20;
+    const int boardWidth = 11;
+    const int boardHeight = 18;
+    const int slIndent = 50;
+
+    const std::vector<char> colours {'W', 'B', 'I', 'J', 'L', 'O', 'S', 'Z', 'T'};
+
+    void init(int id);
+    void updateLevel(int id);
+    void updateScore(int id);
+    void updateGrid(int id);
+    void updateNext(int id);
  public:
-     GraphicsDisplay(const std::vector<Board> &bs);
-     void drawBoards(std::ostream& out);
+     GraphicsDisplay(std::vector<Board> &bs);
+     void updateDisplay(int id);
      ~GraphicsDisplay();
 };
 
 #endif
-
