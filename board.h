@@ -42,7 +42,7 @@ class Board {
     void drop(); // drops the piece
 public:
     Board(bool hasSeed, int seed, std::string file0, int lvl = 0);
-    void applyCommand(Command &c);
+    void applyCommand(const Command &c);
     void setLevel(int lvl);
     // getters
     int getTurn() const;

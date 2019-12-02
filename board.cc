@@ -120,7 +120,7 @@ Board::Board(bool hasSeed, int seed, string file0, int lvl): level{make_unique<L
     splitBlock = level->hasSplitBlock();
 }
 
-void Board::applyCommand(Command &c) { // applies the command
+void Board::applyCommand(const Command &c) { // applies the command
     if(c.commandType == CommandType::MoveLeft) { // move left
         for(int i = 0;i < rep;++i) {// moves piece rep times to the left
             if (!movePiece(-1,0)) break; // breaks on failed move to save time
