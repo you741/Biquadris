@@ -9,27 +9,27 @@ class Board;
 
 class GraphicsDisplay {
 
-    std::vector <*Board> boards;
-    std::vector <*Xwindow> xw;
-    
-    const size_t leftIndent = 20;
-    const size_t topIndent = 20;
-    const size_t lineBreak = 15;
-    const size_t cellWidth = 20;
-    const size_t boardWidth = 11;
-    const size_t boardHeight = 18;
-    const size_t slIndent = 50;
+    std::vector <Board*> boards;
+    std::vector <Xwindow*> xw;
 
-    const std::vector<string> colours = {'W', 'B', 'I', 'J', 'L', 'O', 'S', 'Z', 'T'},
+    const int leftIndent = 20;
+    const int topIndent = 20;
+    const int lineBreak = 15;
+    const int cellWidth = 20;
+    const int boardWidth = 11;
+    const int boardHeight = 18;
+    const int slIndent = 50;
 
-    void init(size_t id);
-    void updateLevel(size_t id);
-    void updateScore(size_t id);
-    void updateGrid(size_t id);
-    void updateNext(size_t id);
+    const std::vector<char> colours {'W', 'B', 'I', 'J', 'L', 'O', 'S', 'Z', 'T'};
+
+    void init(int id);
+    void updateLevel(int id);
+    void updateScore(int id);
+    void updateGrid(int id);
+    void updateNext(int id);
  public:
-     GraphicsDisplay(const std::vector<Board> &bs);
-     void updateBoard(size_t id);
+     GraphicsDisplay(std::vector<Board> &bs);
+     void updateDisplay(int id);
      ~GraphicsDisplay();
 };
 
