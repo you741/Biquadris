@@ -3,9 +3,8 @@
 #include <iostream>
 #include <vector>
 // #include "observer.h"
-#include "boardstate.h"
-#include "boardinfo.h"
-class Board;
+#include "board.h"
+// class Board;
 
 class TextDisplay {
   std::vector<Board*> boards;
@@ -13,8 +12,9 @@ class TextDisplay {
   void drawScore(std::ostream& out);
   void drawGrid(std::ostream& out);
   void drawNext(std::ostream& out);
+  void drawHorizontalLine(std::ostream& out);
  public:
-  TextDisplay(const std::vector<Board> &bs);
+  TextDisplay(std::vector<Board> &bs);
   void drawBoards(std::ostream& out);
 
 
