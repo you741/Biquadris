@@ -28,6 +28,7 @@ Game::Game(CommandArgs ca) {
 }
 
 void Game::updateDisplay(int id) {
+    cout << "Update display" << endl;
     td->updateDisplay(cout);
     if (!textOnly) {
         graphics->updateDisplay(id);
