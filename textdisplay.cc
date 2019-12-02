@@ -7,8 +7,8 @@
 using namespace std;
 
 
-TextDisplay::TextDisplay(const vector<Board> &bs): {
-    for (int i = 0; i < bs.size(); ++i) {
+TextDisplay::TextDisplay(vector<Board> &bs) {
+    for (unsigned i = 0; i < bs.size(); ++i) {
         boards.emplace_back(&bs[i]);
     }
 };
@@ -23,7 +23,7 @@ void TextDisplay::drawBoards(std::ostream &out) {
 }
 
 void TextDisplay::drawLevel(std::ostream &out) {
-    for (int i = 0; i < boards.size(); ++i) {
+    for (unsigned i = 0; i < boards.size(); ++i) {
         if (i != 0) {
             out << setw(8);
         }
@@ -33,7 +33,7 @@ void TextDisplay::drawLevel(std::ostream &out) {
 }
 
 void TextDisplay::drawScore(std::ostream &out) {
-    for (int i = 0; i < boards.size(); ++i) {
+    for (unsigned i = 0; i < boards.size(); ++i) {
         if (i != 0) {
             out << setw(8);
         }
@@ -43,7 +43,7 @@ void TextDisplay::drawScore(std::ostream &out) {
 }
 
 void TextDisplay::drawHorizontalLine(std::ostream &out) {
-    for (int i = 0; i < boards.size(); ++i) {
+    for (unsigned i = 0; i < boards.size(); ++i) {
         if (i != 0) {
             out << setw(8);
         }
@@ -59,16 +59,19 @@ void TextDisplay::drawGrid(std::ostream &out) {
     int boardWidth = boards[0]->getWidth();
 
     for (int y = boardHeight - 1; y >= 0; --y) {
-        for (int i = 0; i < boards.size(); ++i) {
+        for (unsigned i = 0; i < boards.size(); ++i) {
             if (i != 0) {
                 out << setw(8);
             }
-            Board board = boards[i];
+            Board *board = boards[i];
+            bool blind = board->getBlind();
             for (int x = 0; x < boardWidth; ++x) {
-                if (board->getGrid()[boardHeight - y][x].getHasBlock()) {
-                    out << board->getGrid()[y][x].getBlock().getSym();
-                } else if (board->getCurPiece().hasCoord(make_pair(y, x))) {
-                    out << board->getCurPiece().getSym();
+                if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11)) {
+                    out << "?";
+                } else if (board->getGrid()[y][x].getHasBlock()) {
+                    out << board->getGrid()[y][x].getBlock()->getSym();
+                } else if (board->getCurPiece()->hasCoord(make_pair(y, x))) {
+                    out << board->getCurPiece()->getSym();
                 } else {
                     // change to space if this works
                     out << "*";
@@ -85,20 +88,20 @@ void TextDisplay::drawNext(std::ostream &out) {
 
     // Get height and width of the piececoord, then get the coordinate relatively
     int maxHeight = 0;
-    for (int i = 0; i < boards.size(); ++i) {
-        Board board = boards[i];
-        maxHeight = max(maxHeight, board->getNextPiece().getHeight());
+    for (unsigned i = 0; i < boards.size(); ++i) {
+        Board *board = boards[i];
+        maxHeight = max(maxHeight, board->getNextPiece()->getHeight());
     }
-    for (int y = 0; y < maxHeight; ++y) {
-        for (int i = 0; i < boards.size(); ++i) {
+    for (int y = boardHeight - 1; y >= 0; --y) {
+        for (unsigned i = 0; i < boards.size(); ++i) {
             if (i != 0) {
                 out << setw(8);
             }
-            board = boards[i];
-            int curPieceHeight = board->getNextPiece().getHeight();
+            Board *board = boards[i];
+            int curPieceHeight = board->getNextPiece()->getHeight();
             for (int x = 0; x < boardWidth; ++x) {
-                if (board->getNextPiece().hasCoord(make_pair(curPieceHeight - 1 - y,x))) {
-                    out << board->getCurPiece().getSym();
+                if (board->getNextPiece()->hasCoord(make_pair(curPieceHeight - 1 - y,x))) {
+                    out << board->getCurPiece()->getSym();
                 } else {
                     // change to space if this works
                     out << "*";

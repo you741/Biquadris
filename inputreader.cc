@@ -4,7 +4,7 @@
 using namespace std;
 
 bool IsIn(const vector<string> &v, const string &s) {
-    for (int i=0;i<v.size();++i)
+    for (unsigned i=0;i<v.size();++i)
         if (v[i] == s) return true;
     return false;
 }
@@ -34,7 +34,7 @@ Command InputReader::readCommand(bool special) {
     iss >> enteredCommand;
 
     if (special) { // forces command to be special, otherwise invalid
-        for (int i=0;i<validCommands.size();++i) {
+        for (unsigned i=0;i<validCommands.size();++i) {
             if (validCommands[i].find(enteredCommand) == 0 && IsIn(specialCommands, validCommands[i])) {
                 if (validCommands[i] == "force") {
                     string block;
@@ -57,7 +57,7 @@ Command InputReader::readCommand(bool special) {
     int count = 0;
     int index = 0;
 
-    for (int i = 0; i<validCommands.size(); ++i) {
+    for (unsigned i = 0; i<validCommands.size(); ++i) {
         if (validCommands[i].find(enteredCommand) == 0) {
             count++;
             realCommand = validCommands[i];
