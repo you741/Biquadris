@@ -11,7 +11,6 @@ public:
     Cell(Block* b); // makes a cell with a block
     Cell(const Cell &c);
     Cell(Cell &&c);
-    Cell &operator=(const Cell &c);
     Cell &operator=(Cell &&c);
     bool getHasBlock() const;
     Block* getBlock() const;

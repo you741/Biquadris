@@ -2,13 +2,8 @@
 
 Cell::Cell() {}
 Cell::Cell(Block *b): hasBlock{true}, block{b} {}
-Cell::Cell(const Cell &c): hasBlock{c.hasBlock}, block{new Block{*c.block}} {}
+Cell::Cell(const Cell &c): hasBlock{false} {} // we only ever create copies of empty Cells, no need to copy Block
 Cell::Cell(Cell &&c): hasBlock{c.hasBlock}, block{std::move(c.block)} {}
-Cell& Cell::operator=(const Cell &c) {
-	hasBlock = c.hasBlock;
-	block.reset(new Block{*c.block});
-	return *this;
-}
 Cell& Cell::operator=(Cell &&c) {
 	hasBlock = c.hasBlock;
 	block = std::move(c.block);

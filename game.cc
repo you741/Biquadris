@@ -17,6 +17,7 @@ Game::Game(CommandArgs ca) {
     boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile2, ca.startLevel});
     graphics = make_unique<GraphicsDisplay>(boards);
     td = make_unique<TextDisplay>(boards);
+    cout << "Built";
 }
 
 void Game::readInput(istream &in) {

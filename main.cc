@@ -27,7 +27,6 @@ int main(int argc, char *argv[]) {
 
         ++i;
     }
-
     // Create and run game
     Game g = Game{ca};
     g.readInput(cin);
