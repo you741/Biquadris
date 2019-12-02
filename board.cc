@@ -85,7 +85,7 @@ void Board::removeFullRowsAndAddPoints() { // checks every row, if it is full we
     }
 }
 
-void Board::getNextPiece() { // sets curPiece to nextPiece and gets the next piece
+void Board::setNextPiece() { // sets curPiece to nextPiece and gets the next piece
     curPiece = move(nextPiece); // transfers ownership of the nextPiece to the current piece
     nextPiece = unique_ptr<Piece>(seq->getPiece()); // sets the next piece
     if(doesCollide(curPiece->getCoords())) {
@@ -101,7 +101,7 @@ void Board::drop() { // drops the piece to the lowest possible point
     }
     turn++; // turn goes up by one
     removeFullRowsAndAddPoints(); // removes all full rows and adds points
-    getNextPiece(); // sets the nextPiece
+    setNextPiece(); // sets the nextPiece
 }
 
 Board::Board(bool hasSeed, int seed, string file0, int lvl): level{make_unique<Level>(lvl)}, file0{file0} {

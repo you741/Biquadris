@@ -39,7 +39,7 @@ class Board {
     void specialHeavyFall();
     bool doesCollide(PieceCoords* pc);
     void removeFullRowsAndAddPoints();
-    void getNextPiece(); // sets curPiece to nextPiece and gets the next piece
+    void setNextPiece(); // sets curPiece to nextPiece and gets the next piece
     void drop(); // drops the piece
 public:
     Board(bool hasSeed, int seed, std::string file0, int lvl = 0);
