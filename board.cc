@@ -31,17 +31,8 @@ bool Board::rotatePiece(bool clockwise) { // tries to rotate the piece, if it is
 
 bool Board::movePiece(int right, int down) { // tries to move the piece, if it is not allowed we do not move it
     unique_ptr<PieceCoords> mpc(curPiece->movePiece(right, down)); // moved piece coordinates
-    cout << "Moved Piece Coordinates:" << endl;
-    for(auto p: mpc->getBlocks()){
-	    cout << p.first << "," << p.second << endl;
-    }
     if(!doesCollide(mpc.get())) { // if it doesn't collide, we set the coordinates
-	cout << "Did not Collide" << endl;
         this->curPiece->setCoords(move(mpc));
-	cout << "Printing ultimate piece coordinates" << endl;
-        for(auto p: this->curPiece.get()->getCoords()->getBlocks()) {
-		cout << p.first << "," << p.second << endl;
-	}
 	return true; // successful move
     } // otherwise do nothing
     return false; // failed move
@@ -49,7 +40,6 @@ bool Board::movePiece(int right, int down) { // tries to move the piece, if it i
 
 void Board::heavyFall() { // handles the heavy effect, if there is one
     if(curPiece->isHeavy()) { // if it is a heavy piece try to move down onei
-	    cout << "was heavy" << endl;
         movePiece(0,1);
     }
 }
@@ -57,7 +47,6 @@ void Board::heavyFall() { // handles the heavy effect, if there is one
 void Board::specialHeavyFall() { // handles falling by special heavy effect
     if(specialHeavy) { // tries to move down by 2, runs a Drop command if we can't
         if(!movePiece(0,2)) { // if we didn't succeed in moving, we apply drop
-		cout << "was special heavy" << endl;
             applyCommand(Command(CommandType::Drop));
         }
     }
@@ -71,6 +60,7 @@ bool Board::doesCollide(PieceCoords* pc, bool checkUpperBound) {
             return true;
         }
     }
+    cout << "Did not collide" << endl;
     return false; // does not collide
 }
 
@@ -133,7 +123,7 @@ Board::Board(bool hasSeed, int seed, string file0, int lvl): level{make_unique<L
 }
 
 void Board::applyCommand(const Command &c) { // applies the command
-    cout << c.commandType << endl;
+    cout << "Command received: " << c.commandType << endl;
     if(c.commandType == CommandType::MoveLeft) { // move left
         for(int i = 0;i < c.rep;++i) {// moves piece rep times to the left
             if (!movePiece(-1,0)) break; // breaks on failed move to save time
@@ -146,10 +136,6 @@ void Board::applyCommand(const Command &c) { // applies the command
         }
         heavyFall();
         specialHeavyFall();
-	cout << "Ey congratulations: " << endl;
-	for(auto p: curPiece->getCoords()->getBlocks()) {
-		cout << p.first << "," << p.second << endl;
-	}
     } else if (c.commandType == CommandType::MoveDown) { // move down
         for(int i = 0;i < c.rep;++i) {// moves piece rep times to the down
             if (!movePiece(0,1)) break; // breaks on failed move to save time
@@ -207,6 +193,7 @@ void Board::applyCommand(const Command &c) { // applies the command
         // do nothing, Game handles this
     } else if (c.commandType == CommandType::Drop) {
         special = false; // we never get a special action unless we clear at least 2 rows, if we do the Drop command should set it to true
+	dropped = true;
         for(int i = 0;i < c.rep && !lost;++i){
             drop(); // drops piece to the bottom, removes all full rows, moves turn up by 1
             if(lost) break; // no need to continue if we lost
@@ -256,10 +243,6 @@ int Board::getTurn() const {
     return turn;
 }
 Piece* Board::getCurPiece() const {
-    cout << "What do we get" << endl;
-    for(auto p: this->curPiece->getCoords()->getBlocks()) {
-	cout << p.first << "," << p.second << endl;
-    }
     return curPiece.get();
 }
 Piece* Board::getNextPiece() const {
@@ -279,6 +262,9 @@ int Board::getLevel() const { // returns level number rather than whole level cl
 }
 bool Board::getSpecial() const {
     return special;
+}
+bool Board::getDropped() const {
+    return dropped;
 }
 bool Board::getLost() const {
     return lost;
@@ -300,4 +286,8 @@ BoardInfo Board::getInfo() const {
 
 void Board::setSpecial(bool special) {
     this->special = special;
+}
+
+void Board::setDropped(bool dropped) {
+    this->dropped = dropped;
 }

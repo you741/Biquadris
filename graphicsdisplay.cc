@@ -15,7 +15,7 @@ int getIndex(const vector<char> &v, const char &c) {
     return 0;
 }
 
-GraphicsDisplay::GraphicsDisplay(vector<Board> &bs): boards {{}}, xw {{}} {
+GraphicsDisplay::GraphicsDisplay(vector<Board> &bs) {
     for (int i=0; i<bs.size(); ++i) {
         boards.emplace_back(&bs[i]);
         xw.emplace_back(new Xwindow);
@@ -32,15 +32,15 @@ GraphicsDisplay::~GraphicsDisplay() {
 void GraphicsDisplay::init(int id) {
     ostringstream oss;
     oss << id;
-    xw[id]->drawString(leftIndent, topIndent,"Player"+oss.str());
-	xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
-	xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");
-	for (int y=topIndent+lineBreak*3; y<=topIndent+lineBreak*3+cellWidth*boardHeight; y+=cellWidth) {
-	    xw[id]->drawLine(leftIndent, y, leftIndent+cellWidth*boardWidth, y);
-	}
+    xw[id]->drawString(leftIndent, topIndent, "Player"+oss.str(), Xwindow::Black);
+    xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
+    xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");
+    for (int y=topIndent+lineBreak*3; y<=topIndent+lineBreak*3+cellWidth*boardHeight; y+=cellWidth) {
+	xw[id]->drawLine(leftIndent, y, leftIndent+cellWidth*boardWidth, y);
+    }
     for (int x=leftIndent; x<=leftIndent+cellWidth*boardWidth; x+=cellWidth) {
-	    xw[id]->drawLine(x, topIndent+lineBreak*3, x, topIndent+lineBreak*3+cellWidth*boardHeight);
-	}
+	xw[id]->drawLine(x, topIndent+lineBreak*3, x, topIndent+lineBreak*3+cellWidth*boardHeight);
+    }
     xw[id]->drawString(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, "Next:");
 }
 
@@ -66,9 +66,9 @@ void GraphicsDisplay::updateScore(int id) {
 }
 
 void GraphicsDisplay::updateGrid(int id) {
-    for (int y=boardHeight-1; y>=0; --y) {
-        for (int x=0; x<boardWidth; ++x) {
-            if (boards[id]->getGrid()[boardHeight-y][x].getHasBlock()) {
+    for (int y=boards[id]->getHeight()-1; y>=0; --y) {
+        for (int x=0; x<boards[id]->getWidth(); ++x) {
+            if (boards[id]->getGrid()[boards[id]->getHeight() - 1 - y][x].getHasBlock()) {
                 xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*y,
                         cellWidth-1, cellWidth-1, getIndex(colours, boards[id]->getCurPiece()->getSym()));
                         // +1 and -1 are to prevent overwriting the line drawn

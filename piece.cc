@@ -79,15 +79,7 @@ bool Piece::isHeavy() const {
 }
 
 void Piece::setCoords(unique_ptr<PieceCoords> &&pc) {
-    cout << "Printing new coordinates again" << endl;
-    for(auto p: pc->getBlocks()) {
-	cout << p.first << "," << p.second << endl;
-    }
     coords = move(pc); // takes ownership of the new coordinates. The old one is destroyed
-    cout << "Printing finalized coordinates of Piece" << endl;
-    for(auto p: coords->getBlocks()) {
-	cout << p.first << "," << p.second << endl;
-    }
 }
 
 PieceCoords* Piece::rotatePiece(bool clockwise) const { // returns coordinates the piece would have if it was rotated either clockwise or counterclockwise

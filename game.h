@@ -10,7 +10,7 @@
 #include "textdisplay.h"
 #include "commandargs.h"
 
-// Where the main driver of the game resides. 
+// Where the main driver of the game resides.
 // Holds all the information and handles transferring information between boards.
 
 

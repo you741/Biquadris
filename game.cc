@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include "textdisplay.h"
@@ -63,23 +62,36 @@ void Game::readInput(istream &in) {
 
         // It is a normal command that is applied like usual
         curBoard.applyCommand(c);
+
+        cout << "Current Piece: " << endl;
+        for(auto p: (curBoard.getCurPiece())->getCoords()->getBlocks()) {
+            cout << p.first << "," << p.second << endl;
+        }
+        cout << "Next Piece: " << endl;
+        for(auto p: (curBoard.getNextPiece())->getCoords()->getBlocks()) {
+            cout << p.first << "," << p.second << endl;
+        }
         updateDisplay(whoseTurn);
         // If it is dropped, check if any special actions are triggered.
-        //  Switch turns 
-        if (c.commandType == CommandType::Drop) {
+        //  Switch turns
+        if (curBoard.getDropped()) {
             if (curBoard.getSpecial()) {
                 Command sc = input->readCommand(true);
+                while(sc.commandType == CommandType::INVALID) {
+                    sc = input->readCommand(true);
+                }
                 //Apply the special command to other board
                 for (int i = 0; i < numBoards; ++i) {
                     if (i != whoseTurn) {
                         boards[i].applyCommand(sc);
-                        updateDisplay(i);
+                        if(!textOnly)
+                        graphics->updateDisplay(i);
                     }
                 }
             }
             nextTurn();
         }
-        
+
     }
 }
 

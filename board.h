@@ -28,6 +28,7 @@ class Board {
     bool splitBlock = false; // the splitting block shows up in level 4
     bool blind = false;
     bool special = false; // if 2+ rows were cleared, we set this to true so Game can tell it needs a special effect
+    bool dropped = false; // if the board just dropped a piece, we notify the game
     bool lost = false; // did they lose the game
     int score = 0;
     int width = 11;
@@ -55,6 +56,7 @@ public:
     bool getBlind() const;
     int getLevel() const; // returns level number rather than whole level class, this is enough information for Game
     bool getSpecial() const;
+    bool getDropped() const;
     bool getLost() const;
     int getScore() const;
     int getWidth() const;
@@ -64,5 +66,6 @@ public:
 
     //setters
     void setSpecial(bool special);
+    void setDropped(bool dropped);
 };
 #endif // BOARD_H

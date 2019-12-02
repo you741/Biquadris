@@ -1,6 +1,6 @@
 #include "cell.h"
 
-Cell::Cell() {}
+Cell::Cell(): hasBlock{false} {}
 Cell::Cell(Block *b): hasBlock{true}, block{b} {}
 Cell::Cell(const Cell &c): hasBlock{false} {} // we only ever create copies of empty Cells, no need to copy Block
 Cell::Cell(Cell &&c): hasBlock{c.hasBlock}, block{std::move(c.block)} {}
