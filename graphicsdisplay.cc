@@ -6,140 +6,85 @@
 #include "graphicsdisplay.h"
 using namespace std;
 
+size_t getIndex(const Vector<char> &v, char &c) {
+    for (size_t i=0; i<v.size(); ++i) {
+        if (v[i] == c) {
+            return i;
+        }
+    }
+    return 0;
+}
 
-
-GraphicsDisplay::GraphicsDisplay(const vector<Board> &bs): xw {new Xwindow}, boards {{}} {
-    for (int i = 0; i < bs.size(); ++i) {
+GraphicsDisplay::GraphicsDisplay(const vector<Board> &bs): boards {{}}, xw {{}} {
+    for (size_t i=0; i<bs.size(); ++i) {
         boards.emplace_back(&bs[i]);
+        xw.emplace_back(new Xwindow);
+        init(i);
     }
 };
 
-void GraphicsDisplay::drawBoards(std::ostream &out) {
-    drawLevel(out);
-    drawScore(out);
-    drawHorizontalLine(out);
-    drawGrid(out);
-    drawHorizontalLine(out);
-    drawNext(out);
+GraphicsDisplay::~GraphicsDisplay() {
+    for (size_t i=0;i<xw.size(); ++i){
+        delete xw[i];
+    }
 }
 
-void GraphicsDisplay::drawLevel(std::ostream &out) {
-    string spaces;
-    for (int i=0;i<=boards[0]->getWidth()-6;++i) {
-	spaces += " ";
-    }
-    for (int i = 0; i < boards.size(); ++i) {
-        string level; 
-	istringstream iss {board[i]->getLevel()};
-	iss >> level;
-        if (i == 0) {
-            xw->drawString(0,0, "Level:" + spaces + level);
-	} else {
-	    xw->drawString(i*boards[i].getWidth+8,0,"Level:" + spaces + level);
+void GraphicsDisplay::init(size_t id) {
+    ostringstream oss {id};
+    xw[id]->drawString(leftIndent, topIndent,"Player"+oss.str());
+	xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
+	xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");
+	for (size_t y=topIndent+lineBreak*3; y<=topIndent+lineBreak*3+cellWidth*boardHeight; y+=cellWidth) {
+	    xw[id]->drawLine(leftIndent, y, leftIndent+cellWidth*boardWidth, y);
+	}
+    for (size_t x=leftIndent; x<=leftIndent+cellWidth*boardWidth; x+=cellWidth) {
+	    xw[id]->drawLine(x, topIndent+lineBreak*3, x, topIndent+lineBreak*3+cellWidth*boardHeight);
+	}
+    xw[id]->drawString(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, "Next:");
+}
+
+void GraphicsDisplay::updateDisplay(size_t id) {
+    updateLevel(id);
+    updateScore(id);
+    updateGrid(id);
+    updateNext(id);
+}
+
+void GraphicsDisplay::updateLevel(size_t id) {
+    ostringstream oss {boards[id]->getScore()};
+    xw[id]->fillRectangle(leftIndent+slIndent, topIndent+lineBreak, slIndent, lineBreak, 0); // clean the previous level
+    xw[id]->drawString(leftIndent+slIndent, topIndent+lineBreak*2, oss.str());
+}
+
+void GraphicsDisplay::updateScore(size_t id) {
+    ostringstream oss {boards[id]->getLevel()};
+    xw[id]->fillRectangle(leftIndent+slIndent, topIndent, slIndent, lineBreak, 0); // clean the previous score
+    xw[id]->drawString(leftIndent+slIndent, topIndent+lineBreak, oss.str());
+}
+
+void GraphicsDisplay::updateGrid(size_t id) {
+    for (size_t y=boardHeight-1; y>=0; --y) {
+        for (size_t x=0; x<boardWidth; ++x) {
+            if (boards[id]->getGrid()[boardHeight-y][x].getHasBlock()) {
+                xw[id]->fillRectangle(leftIndent+x*cellWidth+1,topIndent+lineBreak*3+cellWidth*y,
+                        cellWidth-1,cellWidth-1, getIndex(colours, boards[id]->getCurPiece().getSym()));
+                        // +1 and -1 are to prevent overwriting the line drawn
+            } else if (boards[id]->getCurPiece().hasCoord(make_pair(y,x))) {
+                xw[id]->fillRectangle(leftIndent+x*cellWidth+1,topIndent+lineBreak*3+cellWidth*y,
+                        cellWidth-1,cellWidth-1, getIndex(colours, boards[id]->getCurPiece().getSym()));
+                        // +1 and -1 are to prevent overwriting the line drawn
+            } else {
+                xw[id]->fillRectangle(leftIndent+x*cellWidth+1,topIndent+lineBreak*3+cellWidth*y,
+                        cellWidth-1,cellWidth-1, 0); // +1 and -1 are to prevent overwriting the lines drawn
+            }
         }
     }
-    out << endl;
 }
 
-void GraphicsDisplay::drawScore(std::ostream &out) {
-    string spaces;
-    for (int i=0;i<=boards[0].getWidth()-6;++i) {
-	spaces += " ";
+void GraphicsDisplay::updateNext(size_t id){
+    xw->fillRectangle(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, slIndent, lineBreak*3, 0); // clean the previous next_block
+    for (auto block : boards[id]->getNextPiece().getBlocks()) {
+           xw[id]->fillRectangle(leftIndent+(block->first)*cellWidth, topIndent+lineBreak*5.5+(block->second)*cellWidth,
+                    cellWidth, cellWidth, getIndex(colours, boards[id]->getNextPiece().getSym());
     }
-    for (int i = 0; i < boards.size(); ++i) {
-        string score; 
-	istringstream iss {board[i]->getScore()};
-	iss >> score;
-        if (i == 0) {
-            xw->drawString(0,1, "Level:" + spaces + score);
-	} else {
-	    xw->drawString(i*boards[i].getWidth+8,1,"Level:" + spaces + score);
-        }
-    }
-    out << endl;
 }
-
-void GraphicsDisplay::drawHorizontalLine(std::ostream &out, size_t y) {
-    string dashes;
-    for (int i=0;i<=boards[0]->getWidth();++i) {
-	dashes += " ";
-    }
-    for (int i = 0; i < boards.size(); ++i) {
-        string score; 
-	istringstream iss {board[i]->getScore()};
-	iss >> score;
-        if (i == 0) {
-            xw->drawString(0,y,dashes);
-	} else {
-	    xw->drawString(i*boards[i].getWidth+8,y, dashes);
-        }
-    }
-    out << endl;
-}
-
-// Will revise a bit later
-
-void GraphicsDisplay::drawGrid(std::ostream &out) {
-    // int boardHeight = boards[0].getHeight() + 3;
-    // int boardWidth = boards[0].getWidth();
-
-    // for (int y = boardHeight - 1; y >= 0; --y) {
-    //     for (int i = 0; i < boards.size(); ++i) {
-    //         if (i != 0) {
-    //             out << setw(8);
-    //         }
-    //         Board board = boards[i];
-    //         for (int x = 0; x < boardWidth; ++x) {
-    //             if (board.getGrid()[boardHeight - y][x].getHasBlock()) {
-    //                 out << board.getGrid()[y][x].getBlock().getSym();
-    //             } else if (board.getCurPiece().hasCoord(make_pair(y, x))) {
-    //                 out << board.getCurPiece().getSym();
-    //             } else {
-    //                 // change to space if this works
-    //                 out << "*";
-    //             }
-    //         }
-    //     }
-    //     out << endl;
-    // }
-}
-
-// Will revise a bit later
-
-void GraphicsDisplay::drawNext(std::ostream &out) {
-    // int boardHeight = boards[0].getHeight() + 3;
-    // int boardWidth = boards[0].getWidth();
-
-    // // Get height and width of the piececoord, then get the coordinate relatively
-    // int maxHeight = 0;
-    // for (int i = 0; i < boards.size(); ++i) {
-    //     Board board = boards[i];
-    //     maxHeight = max(maxHeight, board.getNextPiece().getHeight());
-    // }
-    // for (int y = 0; y < maxHeight; ++y) {
-    //     for (int i = 0; i < boards.size(); ++i) {
-    //         if (i != 0) {
-    //             out << setw(8);
-    //         }
-    //         board = boards[i];
-    //         int curPieceHeight = board.getNextPiece().getHeight();
-    //         for (int x = 0; x < boardWidth; ++x) {
-    //             if (board.getNextPiece().hasCoord(make_pair(curPieceHeight - 1 - y,x))) {
-    //                 out << board.getCurPiece().getSym();
-    //             } else {
-    //                 // change to space if this works
-    //                 out << "*";
-    //             }
-    //         }
-    //     }
-    //     out << endl;
-    // }
-}
-
-
-// // // Print the 2D char array
-// std::ostream &operator<<(std::ostream &out, const TextDisplay &td) {
-//     drawBoards(out);
-//     return out;
-// }
-
