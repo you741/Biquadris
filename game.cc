@@ -9,22 +9,16 @@ using namespace std;
 
 Game::Game(CommandArgs ca) {
     // cannot do this in a loop since currently, ca.scriptfile1/2 are not in a vector
-    // for (int i = 0; i < numBoards; ++i) {
-    //     boards.emplace_back(Board{})
-    // }
+    for (int i = 0; i < numBoards; ++i) {
+        boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfiles[i], i, ca.startLevel});
+    }
 
     // if ca.customSeed is true, then use the seed
-    // if ca.scriptfile1 is "", then there is no custom scriptfile
     this->ca = ca;
-    int id = 0;
-    boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfiles[id], id, ca.startLevel});
-    ++id;
-    boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfiles[id], id, ca.startLevel});
-
     textOnly = ca.textOnly;
     if (!textOnly) {
         graphics = make_unique<GraphicsDisplay>(boards);
-        for (auto &board: boards) {
+        for (auto &board: boards) { //attach observers
             board.attach(graphics.get());
             board.initNotify();
         }
@@ -34,13 +28,10 @@ Game::Game(CommandArgs ca) {
 }
 
 void Game::updateDisplay(int id) {
-    // cout << "Update display" << endl;
     td->updateDisplay(cout);
-    // if (!textOnly) {
-    //     graphics->updateDisplay(id);
-    // }
 }
 
+// to read special commands when 2+ lines are cleared
 bool Game::readSpecialCommand(istream &in) {
 	unique_ptr<InputReader> input = make_unique<InputReader>(in);
 	cout << "Player " << whoseTurn+1 << ", enter a special command (blind/heavy/force [block type]): " << endl;
@@ -56,13 +47,12 @@ bool Game::readSpecialCommand(istream &in) {
     for (int i = 0; i < numBoards; ++i) {
         if (i != whoseTurn) {
             boards[i].applyCommand(sc);
-            // if(!textOnly)
-            //     graphics->updateDisplay(i);
         }
     }
 	return true;
 }
 
+// core loop of the game, will continuously run to play the game
 bool Game::readInput(istream &in) {
     unique_ptr<InputReader> input = make_unique<InputReader>(in);
     bool sequenceAsksForSpecial = false;
@@ -70,16 +60,18 @@ bool Game::readInput(istream &in) {
         //Get the new command and apply it to curBoard
         Board &curBoard = boards[whoseTurn];
 
+        // when sequence file triggers special but does not give a special but an EOF instead
         if(sequenceAsksForSpecial) {
-          if(!readSpecialCommand(in)) {
-            return true; // if we get false, that means readSpecialCommand got an EOF and we just return true to let the caller know
-          }
-          updateDisplay(whoseTurn);
-          curBoard.setSpecial(false);
-          sequenceAsksForSpecial = false;
-          curBoard.setDropped(false);
-          nextTurn();
-          continue;
+            if(!readSpecialCommand(in)) {
+                return true; // if we get false, that means readSpecialCommand got an EOF and we just return true to let the caller know
+            }
+            // if the special succeeded
+            updateDisplay(whoseTurn);
+            curBoard.setSpecial(false);
+            sequenceAsksForSpecial = false;
+            curBoard.setDropped(false);
+            nextTurn();
+            continue;
         }
 
         cout << "Player " << whoseTurn+1 << "'s Turn: " << endl;
@@ -96,7 +88,7 @@ bool Game::readInput(istream &in) {
         if (c.commandType == CommandType::Restart) {
             boards[whoseTurn] = Board{ca.customSeed, ca.seed, ca.scriptfiles[whoseTurn], whoseTurn, ca.startLevel}; // sets a new Board
             updateDisplay(whoseTurn);
-            boards[whoseTurn].attach(graphics.get());
+            boards[whoseTurn].attach(graphics.get()); // reattach the observer
             boards[whoseTurn].initNotify();
             continue;
         }

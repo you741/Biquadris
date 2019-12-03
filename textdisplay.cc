@@ -9,12 +9,15 @@ using namespace std;
 
 TextDisplay::TextDisplay(vector<Board> &bs) {
     for (unsigned i = 0; i < bs.size(); ++i) {
+        // boards is given as pointers since textdisplay will need to know everything about board
+        //  every single time unlike graphics display
         boards.emplace_back(&bs[i]);
     }
-    updateDisplay(cout);
+    updateDisplay(cout); // initial display
 };
 
 void TextDisplay::updateDisplay(std::ostream &out) {
+    // draw everything in order
     drawLevel(out);
     drawScore(out);
     drawHorizontalLine(out);
@@ -69,15 +72,14 @@ void TextDisplay::drawGrid(std::ostream &out) {
             bool blind = board->getBlind();
             for (int x = 0; x < boardWidth; ++x) {
                 if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11))) {
-                    out << "?";
+                    out << "?"; // blind
                 } else if (board->getCurPiece()->hasCoord(make_pair(x, y))) {
-                    out << board->getCurPiece()->getSym();
+                    out << board->getCurPiece()->getSym();  // check the coordinate of current piece, since it is not on grid yet
                 } else if (y >= actualBoardHeight) {
                     out << " ";
                 } else if (board->getGrid()[y][x].getHasBlock()) {
                     out << board->getGrid()[y][x].getBlock()->getSym();
                 } else {
-                    // change to space if this works
                     out << " ";
                 }
             }
@@ -112,6 +114,7 @@ void TextDisplay::drawNext(std::ostream &out) {
             }
             Board *board = boards[i];
             for (int x = 0; x < boardWidth; ++x) {
+                // the coord in nextPiece is relative to the actual grid, so need boardHeight - y
                 if (board->getNextPiece()->hasCoord(make_pair(x, boardHeight - 1 + y))) {
                     out << board->getNextPiece()->getSym();
                 } else {

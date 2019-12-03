@@ -1,4 +1,3 @@
-se testSpecial.txt
 O
 2ri
 dr
