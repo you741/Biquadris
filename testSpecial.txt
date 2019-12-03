@@ -1,3 +1,4 @@
+restart
 O
 drop
 drop
@@ -20,4 +21,4 @@ drop
 I
 clock
 10ri
-
+drop

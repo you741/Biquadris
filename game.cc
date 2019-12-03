@@ -36,38 +36,73 @@ void Game::updateDisplay(int id) {
     }
 }
 
-void Game::readInput(istream &in) {
-    unique_ptr<InputReader> input = make_unique<InputReader>(in);
+bool Game::readSpecialCommand(istream &in) {
+	unique_ptr<InputReader> input = make_unique<InputReader>(in);
+	cout << "Player " << whoseTurn+1 << ", enter a special command (blind/heavy/force [block type]): " << endl;
+	Command sc = input->readCommand(true);
+        while(sc.commandType == CommandType::INVALID) {
+	    cout << "Invalid command, try again: " << endl;
+	    sc = input->readCommand(true);
+        }
+	cout << "Command received " << sc.commandType << endl;
+	if(sc.commandType == CommandType::EndOfFile) { // lets Game know it is end of file, so we can send the message to the caller
+	    cout << "Received end of file" << endl;
+	    return false;
+	}
+        //Apply the special command to other board
+        for (int i = 0; i < numBoards; ++i) {
+            if (i != whoseTurn) {
+                boards[i].applyCommand(sc);
+                if(!textOnly)
+                    graphics->updateDisplay(i);
+            }
+        }
+	return true;
+}
 
+bool Game::readInput(istream &in) {
+    unique_ptr<InputReader> input = make_unique<InputReader>(in);
+    bool sequenceAsksForSpecial = false;
     while (!hasWon()) {
         //Get the new command and apply it to curBoard
         Board &curBoard = boards[whoseTurn];
-	cout << "Player " << whoseTurn+1 << "'s Turn: ";
+	if(sequenceAsksForSpecial) {
+		if(!readSpecialCommand(in)) {
+			return true; // if we get false, that means readSpecialCommand got an EOF and we just return true to let the caller know
+		}
+		updateDisplay(whoseTurn);
+		curBoard.setSpecial(false);
+		sequenceAsksForSpecial = false;
+	}
+	cout << "Player " << whoseTurn+1 << "'s Turn: " << endl;
         Command c = input->readCommand(false);
-
 
         // Either quit if it is coming from user
         //  or the file is done creating inputs
         if (c.commandType == CommandType::EndOfFile) {
-            return;
+            return false;
         }
 
         if (c.commandType == CommandType::Restart) {
             boards[whoseTurn] = Board{ca.customSeed, ca.seed, ca.scriptfile1, ca.startLevel}; // sets a new Board
 	    updateDisplay(whoseTurn);
-	    return;
+	    continue;
         }
         // If command is Sequence, must start reading from the file instead
         if (c.commandType == CommandType::Sequence) {
             ifstream inputFile;
             inputFile.open(c.file);
             if (inputFile.is_open()) {
-                readInput(inputFile);
+                sequenceAsksForSpecial = readInput(inputFile);
                 inputFile.close();
             }
             continue;
         }
 
+	if(c.commandType == CommandType::INVALID) {
+	    cout << "Invalid command." << endl;
+            continue;
+	}
 
         // It is a normal command that is applied like usual
         curBoard.applyCommand(c);
@@ -76,29 +111,20 @@ void Game::readInput(istream &in) {
         //  Switch turns
         if (curBoard.getDropped()) {
             if (curBoard.getSpecial()) {
-                Command sc = input->readCommand(true);
-                while(sc.commandType == CommandType::INVALID) {
-                    sc = input->readCommand(true);
-                }
-                //Apply the special command to other board
-                for (int i = 0; i < numBoards; ++i) {
-                    if (i != whoseTurn) {
-                        boards[i].applyCommand(sc);
-                        if(!textOnly)
-                        graphics->updateDisplay(i);
-                    }
-                }
+		if(!readSpecialCommand(in)) {
+		    return true; // if we get false, that means readSpecialCommand got an EOF and we just return true to let the caller know
+		}
 		updateDisplay(whoseTurn);
 		curBoard.setSpecial(false);
-            }
+	    }
 	    curBoard.setDropped(false);
             nextTurn();
         }
-
     }
     for (int i=0; i<numBoards;++i) {
         winnerScore = max(winnerScore, boards[i].getScore());
     }
+    return false;
 }
 
 void Game::nextTurn() {
