@@ -25,10 +25,11 @@ Piece* PieceSequence::getPiece() { // generates a piece based on random and the 
     // all the probabilities are here
     char nextBlockType; // the next Piece type, it will create it based on a BlockType
     if(level->getLevel() == 0 || !random) { // it needs to be nonrandom here (level 0 has to be nonrandom)
+        file >> nextBlockType;
         if(file.eof()) { // if we could not read the file (eof), then we restart the file stream
             file = ifstream(filename);
+            file >> nextBlockType;
         }
-        file >> nextBlockType;
         // cout << "Next Block Is: " << nextBlockType << endl;
     } else { // then it is a random generation
         int r = rand();

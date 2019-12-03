@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
         if (g.getWinnerScore() == -1) {
             continue;
         } else {
-            cout << "The winner of this game, Player" << g.returnWinner() << ", scored " << g.getWinnerScore() << "points," << endl;
+            cout << "The winner of this game, Player " << g.returnWinner() + 1 << ", scored " << g.getWinnerScore() << " points," << endl;
             cout << "want to continue playing?[y/n]" << endl;
             std::string decision;
             bool wantToContinue = false;

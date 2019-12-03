@@ -72,12 +72,12 @@ void TextDisplay::drawGrid(std::ostream &out) {
                 } else if (board->getCurPiece()->hasCoord(make_pair(x, y))) {
                     out << board->getCurPiece()->getSym();
                 } else if (y >= actualBoardHeight) {
-                    out << "*";
+                    out << " ";
                 } else if (board->getGrid()[y][x].getHasBlock()) {
                     out << board->getGrid()[y][x].getBlock()->getSym();
                 } else {
                     // change to space if this works
-                    out << "*";
+                    out << " ";
                 }
             }
         }
@@ -115,7 +115,7 @@ void TextDisplay::drawNext(std::ostream &out) {
                     out << board->getNextPiece()->getSym();
                 } else {
                     // change to space if this works
-                    out << "*";
+                    out << " ";
                 }
             }
         }

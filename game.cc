@@ -28,7 +28,7 @@ Game::Game(CommandArgs ca) {
 }
 
 void Game::updateDisplay(int id) {
-    cout << "Update display" << endl;
+    // cout << "Update display" << endl;
     td->updateDisplay(cout);
     if (!textOnly) {
         graphics->updateDisplay(id);
@@ -65,6 +65,7 @@ bool Game::readInput(istream &in) {
     while (!hasWon()) {
         //Get the new command and apply it to curBoard
         Board &curBoard = boards[whoseTurn];
+
         if(sequenceAsksForSpecial) {
           if(!readSpecialCommand(in)) {
             return true; // if we get false, that means readSpecialCommand got an EOF and we just return true to let the caller know
@@ -74,6 +75,7 @@ bool Game::readInput(istream &in) {
           sequenceAsksForSpecial = false;
         }
         cout << "Player " << whoseTurn+1 << "'s Turn: " << endl;
+
         Command c = input->readCommand(false);
 
         // Either quit if it is coming from user

@@ -1,5 +1,7 @@
 #include <string>
 #include "commandargs.h"
+#include <algorithm>    // std::max
+
 
 using namespace std;
 
@@ -19,7 +21,7 @@ void CommandArgs::setScriptFile2(string file) {
 }
 
 void CommandArgs::setStartLevel(int level) {
-    startLevel = level;
+    startLevel = min(level, 4);
 }
 
 
