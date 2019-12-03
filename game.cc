@@ -89,7 +89,9 @@ void Game::readInput(istream &in) {
                         graphics->updateDisplay(i);
                     }
                 }
+		curBoard.setSpecial(false);
             }
+	    curBoard.setDropped(false);
             nextTurn();
         }
 

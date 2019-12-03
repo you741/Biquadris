@@ -13,7 +13,7 @@ class InputReader {
         "clockwise", "counterclockwise",
         "levelup", "leveldown",
         "norandom","random", "sequence",
-        "restart", "heavy", "force", "blind",
+        "restart", "heavy", "force", "blind","drop",
         "I", "J", "L",
         "O", "S", "Z", "T"
     };

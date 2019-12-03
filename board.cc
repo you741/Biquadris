@@ -84,6 +84,7 @@ void Board::removeFullRowsAndAddPoints() { // checks every row, if it is full we
     }
     if(numFullRows >= 1) { // if we cleared at least row, we reset the turn we last cleared a block (relevant for levels with splitting blocks)
         lastCleared = turn;
+	score += (numFullRows + level->getLevel()) * (numFullRows + level->getLevel());
     }
 }
 
@@ -103,6 +104,7 @@ void Board::drop() { // drops the piece to the lowest possible point
         }
     }
     if(doesCollide(curPiece->getCoords(),true)) {
+	cout << "lost" << endl;
         lost = true; // we lose if we dropped the piece off the board
         return;
     }
@@ -208,7 +210,7 @@ void Board::applyCommand(const Command &c) { // applies the command
         special = false; // we never get a special action unless we clear at least 2 rows, if we do the Drop command should set it to true
         dropped = true;
         for(int i = 0;i < c.rep && !lost;++i){
-            drop(); // drops piece to the bottom, removes all full rows, moves turn up by 1
+	    drop(); // drops piece to the bottom, removes all full rows, moves turn up by 1
             if(lost) break; // no need to continue if we lost
             if(splitBlock) {
                 if(turn - lastCleared > 0 && (turn - lastCleared)%5 == 0) {

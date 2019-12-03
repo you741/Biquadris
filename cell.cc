@@ -17,6 +17,7 @@ Block* Cell::getBlock() const {
 }
 void Cell::setBlock(Block *b) {
     block.reset(b);
+    hasBlock = true;
 }
 int Cell::removeBlockAndGetPoints() {
     if(hasBlock) {

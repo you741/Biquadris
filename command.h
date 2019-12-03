@@ -18,9 +18,9 @@ enum CommandType: int { // enum for different command types
     Heavy,
     Force,
     Blind,
+    Drop,
     ChangePiece,
     EndOfFile,
-    Drop,
     INVALID
 };
 
