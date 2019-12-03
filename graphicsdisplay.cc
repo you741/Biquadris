@@ -22,7 +22,7 @@ GraphicsDisplay::~GraphicsDisplay() {
 
 void GraphicsDisplay::init(int id) {
     ostringstream oss;
-    oss << id;
+    oss << id+1;
     xw[id]->drawString(leftIndent, topIndent, "Player"+oss.str(), Xwindow::Black);
     xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
     xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");

@@ -37,10 +37,11 @@ int main(int argc, char *argv[]) {
             continue;
         } else {
             cout << "The winner of this game, Player " << g.returnWinner() + 1 << ", scored " << g.getWinnerScore() << " points," << endl;
+            cout << "The highest score ever is: " << hiScore << "." << endl;
             cout << "want to continue playing?[y/n]" << endl;
             std::string decision;
             bool wantToContinue = false;
-            while (cin >> decision) {
+            while (getline(cin,decision)) {
                 if (decision == "y") {
                      wantToContinue = true;
                      break;
