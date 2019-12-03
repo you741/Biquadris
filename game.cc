@@ -62,6 +62,7 @@ bool Game::readSpecialCommand(istream &in) {
 bool Game::readInput(istream &in) {
     unique_ptr<InputReader> input = make_unique<InputReader>(in);
     bool sequenceAsksForSpecial = false;
+    updateDisplay(0);
     while (!hasWon()) {
         //Get the new command and apply it to curBoard
         Board &curBoard = boards[whoseTurn];

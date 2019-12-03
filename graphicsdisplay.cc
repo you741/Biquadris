@@ -20,6 +20,7 @@ GraphicsDisplay::~GraphicsDisplay() {
     }
 }
 
+
 void GraphicsDisplay::drawGrid(int id) {
     xw[id]->fillRectangle(leftIndent, topIndent+lineBreak*3, cellWidth*boardWidth, cellWidth*boardHeight, 0); // clean the previous level
     for (int y=topIndent+lineBreak*3; y<=topIndent+lineBreak*3+cellWidth*boardHeight; y+=cellWidth) {
