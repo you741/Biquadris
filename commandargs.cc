@@ -10,15 +10,14 @@ void CommandArgs::setSeed(int s) {
     seed = s;
 }
 
-void CommandArgs::setScriptFile1(string file) {
-    customSF1 = true;
-    scriptfile1 = file;
+void CommandArgs::setScriptFile(string file, int id) {
+    scriptfiles[id] = file;
 }
 
-void CommandArgs::setScriptFile2(string file) {
-    customSF2 = true;
-    scriptfile2 = file;
-}
+// void CommandArgs::setScriptFile2(string file) {
+//     customSF2 = true;
+//     scriptfile2 = file;
+// }
 
 void CommandArgs::setStartLevel(int level) {
     startLevel = min(level, 4);

@@ -16,12 +16,18 @@ Game::Game(CommandArgs ca) {
     // if ca.customSeed is true, then use the seed
     // if ca.scriptfile1 is "", then there is no custom scriptfile
     this->ca = ca;
-    boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile1, ca.startLevel});
-    boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile2, ca.startLevel});
+    int id = 0;
+    boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfiles[id], id, ca.startLevel});
+    ++id;
+    boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfiles[id], id, ca.startLevel});
 
     textOnly = ca.textOnly;
     if (!textOnly) {
         graphics = make_unique<GraphicsDisplay>(boards);
+        for (auto &board: boards) {
+            board.attach(graphics.get());
+            board.initNotify();
+        }
     }
     td = make_unique<TextDisplay>(boards);
 
@@ -30,9 +36,9 @@ Game::Game(CommandArgs ca) {
 void Game::updateDisplay(int id) {
     // cout << "Update display" << endl;
     td->updateDisplay(cout);
-    if (!textOnly) {
-        graphics->updateDisplay(id);
-    }
+    // if (!textOnly) {
+    //     graphics->updateDisplay(id);
+    // }
 }
 
 bool Game::readSpecialCommand(istream &in) {
@@ -50,8 +56,8 @@ bool Game::readSpecialCommand(istream &in) {
         for (int i = 0; i < numBoards; ++i) {
             if (i != whoseTurn) {
                 boards[i].applyCommand(sc);
-                if(!textOnly)
-                    graphics->updateDisplay(i);
+                // if(!textOnly)
+                //     graphics->updateDisplay(i);
             }
         }
 	return true;
@@ -84,9 +90,9 @@ bool Game::readInput(istream &in) {
         }
 
         if (c.commandType == CommandType::Restart) {
-            boards[whoseTurn] = Board{ca.customSeed, ca.seed, ca.scriptfile1, ca.startLevel}; // sets a new Board
-	          updateDisplay(whoseTurn);
-	          continue;
+            boards[whoseTurn] = Board{ca.customSeed, ca.seed, ca.scriptfiles[whoseTurn], whoseTurn, ca.startLevel}; // sets a new Board
+            updateDisplay(whoseTurn);
+            continue;
         }
         // If command is Sequence, must start reading from the file instead
         if (c.commandType == CommandType::Sequence) {

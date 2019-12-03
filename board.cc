@@ -115,7 +115,7 @@ void Board::drop() { // drops the piece to the lowest possible point
     setNextPiece(); // sets the nextPiece
 }
 
-Board::Board(bool hasSeed, int seed, string file0, int lvl): level{make_unique<Level>(lvl)}, file0{file0} {
+Board::Board(bool hasSeed, int seed, string file0, int id, int lvl): level{make_unique<Level>(lvl)}, file0{file0}, id{id} {
     // we set our sequence
     if(lvl == 0) { // level 0 needs to start with a sequence, so we create piece sequence with a file
         seq = make_unique<PieceSequence>(file0,lvl,hasSeed,seed,height);
@@ -129,6 +129,12 @@ Board::Board(bool hasSeed, int seed, string file0, int lvl): level{make_unique<L
     }
     heavy = level->isHeavy();
     splitBlock = level->hasSplitBlock();
+
+}
+
+void Board::initNotify() {
+    setState(BoardState{StateType::BoardChange});
+    notifyObservers();
 }
 
 void Board::applyCommand(const Command &c) { // applies the command
@@ -138,17 +144,20 @@ void Board::applyCommand(const Command &c) { // applies the command
         }
         heavyFall();
         specialHeavyFall();
+        setState(BoardState{StateType::PieceMoved});
     } else if (c.commandType == CommandType::MoveRight) { // move right
         for(int i = 0;i < c.rep;++i) {// moves piece rep times to the right
             if (!movePiece(1,0)) break; // breaks on failed move to save time
         }
         heavyFall();
         specialHeavyFall();
+        setState(BoardState{StateType::PieceMoved});
     } else if (c.commandType == CommandType::MoveDown) { // move down
         for(int i = 0;i < c.rep;++i) {// moves piece rep times to the down
             if (!movePiece(0,1)) break; // breaks on failed move to save time
         }
         heavyFall();
+        setState(BoardState{StateType::PieceMoved});
     } else if (c.commandType == CommandType::Clockwise) { // rotates clockwise
         cout << "Lowest is: " << curPiece->getLowest() << endl;
         cout << "LeftMost is: " << curPiece->getLeftmost() << endl;
@@ -157,20 +166,19 @@ void Board::applyCommand(const Command &c) { // applies the command
             if(!rotatePiece()) break;
         }
         heavyFall();
+        setState(BoardState{StateType::PieceMoved});
     } else if (c.commandType == CommandType::CounterClockwise) {
         for(int i = 0;i < c.rep%4;++i) {
             if(!rotatePiece(false)) break;
         }
         heavyFall();
+        setState(BoardState{StateType::PieceMoved});
     } else if (c.commandType == CommandType::LevelUp) { // moves level up
         setLevel(min(MAX_LEVEL,level->getLevel() + c.rep)); // increases level by rep amount
+        setState(BoardState{StateType::LevelChange});
     } else if (c.commandType == CommandType::LevelDown) {
         setLevel(max(0, level->getLevel() - c.rep));
-    } else if (c.commandType == CommandType::NoRandom) {
-        if(level->getLevel() == 3 || level->getLevel() == 4) {
-            // needs to be level 3 or 4 to remove the random
-            seq->setFile(c.file);
-        }
+        setState(BoardState{StateType::LevelChange});
     } else if (c.commandType == CommandType::NoRandom) {
         if(level->getLevel() == 3 || level->getLevel() == 4) {
             // needs to be level 3 or 4 to remove the random
@@ -192,6 +200,7 @@ void Board::applyCommand(const Command &c) { // applies the command
         if(doesCollide(curPiece->getCoords())) {
             lost = true; // we lose if we can't change the piece
         }
+        
     } else if (c.commandType == CommandType::Blind) {
         blind = true;
     } else if (c.commandType == CommandType::ChangePiece) {
@@ -200,6 +209,7 @@ void Board::applyCommand(const Command &c) { // applies the command
             // if it doesn't collide we transfer ownership to our curPiece
             curPiece = move(newPiece);
         }
+        setState(BoardState{StateType::PieceMoved});
     } else if (c.commandType == CommandType::EndOfFile) {
         // do nothing, Game handles this
     } else if (c.commandType == CommandType::Drop) {
@@ -231,6 +241,7 @@ void Board::applyCommand(const Command &c) { // applies the command
                 }
             }
         }
+        setState(BoardState{StateType::PieceDropped});
         /* by the end, the Game should be able to know:
             1. If we get a special action.
             2. If we lost.
@@ -242,6 +253,7 @@ void Board::applyCommand(const Command &c) { // applies the command
     } else {
         // Invalid command, handle it in Game
     }
+    notifyObservers();
 }
 void Board::setLevel(int lvl) {
     level->setLevel(lvl); // sets the level
@@ -294,7 +306,7 @@ int Board::getHeight() const {
     return height;
 }
 BoardInfo Board::getInfo() const {
-    return BoardInfo{blind,score,curPiece->getCoords(),grid,level->getLevel()};
+    return BoardInfo{height, width, blind,score,curPiece.get(), nextPiece.get(),grid,id,level->getLevel()};
 }
 // TODO: need to make attach later
 
