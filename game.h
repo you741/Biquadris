@@ -21,6 +21,7 @@ class Game{
     int whoseTurn = 0;
     int hiScore = 0;
     bool textOnly = false;
+    int winnerScore = -1;
     std::unique_ptr<GraphicsDisplay> graphics;
     std::unique_ptr<TextDisplay> td;
 
@@ -32,6 +33,7 @@ class Game{
     void nextTurn();
     bool hasWon();
     int returnWinner();
+    int getWinnerScore();
     Board& getBoard(int target);
 };
 #endif
