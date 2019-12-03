@@ -27,10 +27,11 @@ class Game{
     std::unique_ptr<TextDisplay> td;
 
     void updateDisplay(int id);
+    bool readSpecialCommand(std::istream &in); // returns false if it hits an EOF
   public:
     Game(CommandArgs ca);
     // The core loop of the game, where input is read until a winner is decided
-    void readInput(std::istream &in);
+    bool readInput(std::istream &in); // returns true if it asks for special
     void nextTurn();
     bool hasWon();
     int returnWinner();

@@ -16,7 +16,9 @@ Command InputReader::readCommand(bool special) {
         return Command {EndOfFile};
     }
     string curline;
-    getline(in, curline);
+    if(!getline(in, curline)) {
+	return Command {EndOfFile};
+    }
     istringstream iss {curline};
     int numToRepeat = 1;
     const vector<string> blockShapes = {"I", "J", "L", "O", "S", "Z", "T"},
