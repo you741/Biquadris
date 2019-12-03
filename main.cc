@@ -11,6 +11,7 @@ int main(int argc, char *argv[]) {
     int i = 1;
     string input;
     while (i < argc) {
+        // read command line arguments
         input = string(argv[i]);
 
         if (input == "-text") {

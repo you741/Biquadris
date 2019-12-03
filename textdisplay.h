@@ -15,9 +15,9 @@ class TextDisplay {
   void drawHorizontalLine(std::ostream& out);
  public:
   TextDisplay(std::vector<Board> &bs);
-  void updateDisplay(std::ostream& out);
+  void updateDisplay(std::ostream& out);  // print the display to out
 
 
-  friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);
+  // friend std::ostream &operator<<(std::ostream &out, const TextDisplay &td);
 };
 #endif

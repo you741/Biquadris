@@ -11,19 +11,12 @@
 class Board;
 
 class GraphicsDisplay: public Observer<BoardInfo, BoardState>{
-    // enum { White = 0, Black, Red, Green, Blue, Cyan, Yellow, Magenta,
-		// Orange, Brown, DarkGreen }; // Available colours.
-
-
-
     // std::vector <Board*> boards;
-    std::vector <Xwindow*> xw;
+    std::vector <std::unique_ptr<Xwindow>> xw;
 
+    //save the state of grids to only update what is necessary
     std::vector <std::vector <std::vector <int>>> state;
     std::vector <std::vector <std::vector <int>>> oldState;
-
-    // std::vector <BoardInfo> boardInfos;
-
 
     const int leftIndent = 20;
     const int topIndent = 20;
@@ -38,14 +31,13 @@ class GraphicsDisplay: public Observer<BoardInfo, BoardState>{
     void updateScore(int id, int score);
     void updateGrid(int id, int width, int height);
     void updateNext(int id, Piece *nextPiece, int height);
-    void drawGrid(int id);
-    void setState(int id, const std::vector<std::vector<Cell>> &grid, Piece *piece, bool blind, int width, int height);
+    void drawGrid(int id); // draw the initial grid lines
+    void setState(int id, const std::vector<std::vector<Cell>> &grid, Piece *piece, bool blind, int width, int height); // set the grid state with correct colours
  public:
-     GraphicsDisplay(std::vector<Board> &bs);
-     void updateDisplay(int id);
+     GraphicsDisplay(std::vector<Board> &bs); 
      void notify(Subject<BoardInfo, BoardState> &whoFrom) override;// Board will call this
 
-     ~GraphicsDisplay();
+    //  ~GraphicsDisplay();
 };
 
 #endif

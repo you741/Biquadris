@@ -26,7 +26,7 @@ class Game{
     std::unique_ptr<GraphicsDisplay> graphics;
     std::unique_ptr<TextDisplay> td;
 
-    void updateDisplay(int id);
+    void updateDisplay(int id); // updates textdisplay
     bool readSpecialCommand(std::istream &in); // returns false if it hits an EOF
   public:
     Game(CommandArgs ca);
