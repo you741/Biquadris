@@ -1,6 +1,5 @@
 #include "board.h"
 #include "piececoords.h"
-#include <iostream>
 
 using namespace std;
 
@@ -217,14 +216,16 @@ void Board::applyCommand(const Command &c) { // applies the command
                         lost = true;
                         break;
                     }
-                    for(int i = 0;i < height;++i) {
+                    int j = height - 1;
+		    for(j = height - 1;j > 0;--j) {
                         // tries the middle of the grid and tries place a block there start at the bottom
-                        if(!grid[i][int(width/2)].getHasBlock()) {
-                            // if we find one with no block, we place it here
-                            grid[i][int(width/2)].setBlock(new Block(make_pair(int(width/2),i),0,Xwindow::Brown,'*'));
+                        if(grid[j][int(width/2)].getHasBlock()) {
+                            // if we find one with block, we stop here and place the block at row j+1 to put it right above here
+			    ++j;
                             break;
                         }
                     }
+                    grid[j][int(width/2)].setBlock(new Block(make_pair(int(width/2),j),0,Xwindow::Brown,'*')); // drops the split block as low as it can get
                     removeFullRowsAndAddPoints(); // removes full rows and adds points, based on the split block this time
                 }
             }

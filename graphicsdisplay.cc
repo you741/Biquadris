@@ -33,8 +33,8 @@ void GraphicsDisplay::drawGrid(int id) {
 
 void GraphicsDisplay::init(int id) {
     ostringstream oss;
-    oss << id;
-    xw[id]->drawString(leftIndent, topIndent, "Player"+oss.str(), Xwindow::Black);
+    oss << id+1;
+    xw[id]->drawString(leftIndent, topIndent, "Player "+oss.str(), Xwindow::Black);
     xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
     xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");
     // drawGrid(id);
@@ -50,17 +50,22 @@ void GraphicsDisplay::updateDisplay(int id) {
     updateNext(id);
 }
 
-void GraphicsDisplay::updateLevel(int id) {
+void GraphicsDisplay::updateScore(int id) {
+    xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");
     ostringstream oss;
     oss << boards[id]->getScore();
-    xw[id]->fillRectangle(leftIndent+slIndent, topIndent+lineBreak, slIndent, lineBreak, 0); // clean the previous level
+    xw[id]->fillRectangle(leftIndent+slIndent, topIndent+lineBreak, slIndent, lineBreak, 0); // clean the previous score
     xw[id]->drawString(leftIndent+slIndent, topIndent+lineBreak*2, oss.str());
 }
 
-void GraphicsDisplay::updateScore(int id) {
+void GraphicsDisplay::updateLevel(int id) {
+    ostringstream idss;
+    idss << id+1;
+    xw[id]->drawString(leftIndent, topIndent, "Player "+idss.str(), Xwindow::Black);
+    xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
     ostringstream oss;
     oss << boards[id]->getLevel();
-    xw[id]->fillRectangle(leftIndent+slIndent, topIndent, slIndent, lineBreak, 0); // clean the previous score
+    xw[id]->fillRectangle(leftIndent+slIndent, topIndent, slIndent, lineBreak, 0); // clean the previous level
     xw[id]->drawString(leftIndent+slIndent, topIndent+lineBreak, oss.str());
 }
 
@@ -94,6 +99,7 @@ void GraphicsDisplay::updateGrid(int id) {
 }
 
 void GraphicsDisplay::updateNext(int id){
+    xw[id]->drawString(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, "Next:");
     xw[id]->fillRectangle(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, slIndent*4, lineBreak*5, 0); // clean the previous next_block
     for (auto block : boards[id]->getNextPiece()->getBlocks()) {
            xw[id]->fillRectangle(leftIndent+(block.first)*cellWidth, topIndent+lineBreak*5+cellWidth*boardHeight+(boards[0]->getHeight()-block.second)*cellWidth,

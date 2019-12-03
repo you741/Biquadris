@@ -32,7 +32,7 @@ Piece::Piece(BlockType b, int x, int y, int level, bool heavy): points{calculate
         this->sym = 'S';
         this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>{make_pair(x,y), make_pair(x+1,y), make_pair(x+1,y+1), make_pair(x+2,y+1)}});
     } else if (b == BlockType::T) {
-        this->colour = Xwindow::Brown;
+        this->colour = Xwindow::Yellow;
         this->sym = 'T';
         this->coords = unique_ptr<PieceCoords>(new PieceCoords{vector<pair<int,int>>{make_pair(x,y+1), make_pair(x+1,y+1), make_pair(x+2,y+1), make_pair(x+1,y)}});
     } else {

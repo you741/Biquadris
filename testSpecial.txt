@@ -21,4 +21,3 @@ drop
 I
 clock
 10ri
-drop

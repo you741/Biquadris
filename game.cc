@@ -40,12 +40,10 @@ bool Game::readSpecialCommand(istream &in) {
 	cout << "Player " << whoseTurn+1 << ", enter a special command (blind/heavy/force [block type]): " << endl;
 	Command sc = input->readCommand(true);
         while(sc.commandType == CommandType::INVALID) {
-	    cout << "Invalid command, try again: " << endl;
+	    cout << "Invalid special command, try again (blind/heavy/force [block type]): " << endl;
 	    sc = input->readCommand(true);
         }
-	cout << "Command received " << sc.commandType << endl;
 	if(sc.commandType == CommandType::EndOfFile) { // lets Game know it is end of file, so we can send the message to the caller
-	    cout << "Received end of file" << endl;
 	    return false;
 	}
         //Apply the special command to other board
@@ -118,8 +116,8 @@ bool Game::readInput(istream &in) {
                 }
                 updateDisplay(whoseTurn);
                 curBoard.setSpecial(false);
-	          }
-	          curBoard.setDropped(false);
+	    }
+	    curBoard.setDropped(false);
             nextTurn();
         }
     }
