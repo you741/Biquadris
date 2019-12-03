@@ -10,6 +10,12 @@ GraphicsDisplay::GraphicsDisplay(vector<Board> &bs) {
     for (int i=0; i<bs.size(); ++i) {
         boards.emplace_back(&bs[i]);
         xw.emplace_back(new Xwindow);
+
+        vector <vector <int>> tmpState;
+        for(int j = 0; j < bs[i].getHeight() + 3;++j){ // adds rows of cells equal to the height
+            tmpState.emplace_back(vector<int>(bs[i].getWidth(), White));
+        }
+        state.emplace_back(tmpState);
         init(i);
     }
 };
@@ -17,6 +23,29 @@ GraphicsDisplay::GraphicsDisplay(vector<Board> &bs) {
 GraphicsDisplay::~GraphicsDisplay() {
     for (int i=0;i<xw.size(); ++i){
         delete xw[i];
+    }
+}
+
+void GraphicsDisplay::setState(int id) {
+    int fullHeight = boards[0]->getHeight()+3;
+    bool blind = boards[id]->getBlind();
+
+    oldState = state;
+
+    for (int y=fullHeight-1; y>=0; --y) {
+        for (int x=0; x<boards[id]->getWidth(); ++x) {
+            if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11))) {
+                state[id][y][x] = Black;
+            } else if (boards[id]->getCurPiece()->hasCoord(make_pair(x,y))) {
+                state[id][y][x] = boards[id]->getCurPiece()->getColour();
+            } else if (y > fullHeight - 4) {
+                state[id][y][x] = White;
+            } else if (boards[id]->getGrid()[y][x].getHasBlock()) {
+                state[id][y][x] = boards[id]->getGrid()[y][x].getBlock()->getColour();
+            } else {
+                state[id][y][x] = White;
+            }
+        }
     }
 }
 
@@ -37,13 +66,14 @@ void GraphicsDisplay::init(int id) {
     xw[id]->drawString(leftIndent, topIndent, "Player "+oss.str(), Xwindow::Black);
     xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
     xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");
-    // drawGrid(id);
     xw[id]->drawString(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, "Next:");
+    drawGrid(id);
 
     updateDisplay(id);
 }
 
 void GraphicsDisplay::updateDisplay(int id) {
+    setState(id);
     updateLevel(id);
     updateScore(id);
     updateGrid(id);
@@ -71,32 +101,46 @@ void GraphicsDisplay::updateLevel(int id) {
 
 void GraphicsDisplay::updateGrid(int id) {
     int fullHeight = boards[0]->getHeight()+3;
-    bool blind = boards[id]->getBlind();
-    drawGrid(id);
+    // drawGrid(id);
     for (int y=fullHeight-1; y>=0; --y) {
         for (int x=0; x<boards[id]->getWidth(); ++x) {
-            if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11))) {
+            if (oldState.size() == 0 || state[id][y][x] != oldState[id][y][x]) {
+                int colour = state[id][y][x];
                 xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
-                        cellWidth-1,cellWidth-1, 1); // +2 and -2 are to prevent overwriting the lines drawn
-            } else if (boards[id]->getCurPiece()->hasCoord(make_pair(x,y))) {
-                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
-                       cellWidth-1, cellWidth-1, boards[id]->getCurPiece()->getColour());
-                        // +2 and -2 are to prevent overwriting the line drawn
-            } else if (y > fullHeight - 4) {
-                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
-                        cellWidth-1,cellWidth-1, 0); // +2 and -2 are to prevent overwriting the lines drawn
-            } else if (boards[id]->getGrid()[y][x].getHasBlock()) {
-                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
-                       cellWidth-1, cellWidth-1, boards[id]->getGrid()[y][x].getBlock()->getColour());
-                        // +2 and -2 are to prevent overwriting the line drawn
+                        cellWidth-1,cellWidth-1, colour); // +2 and -2 are to prevent overwriting the lines drawn
             }
-            //  else {
-            //     xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
-            //             cellWidth-2,cellWidth-2, 0); // +2 and -2 are to prevent overwriting the lines drawn
-            // }
         }
     }
 }
+
+// void GraphicsDisplay::updateGrid(int id) {
+//     int fullHeight = boards[0]->getHeight()+3;
+//     bool blind = boards[id]->getBlind();
+//     drawGrid(id);
+//     for (int y=fullHeight-1; y>=0; --y) {
+//         for (int x=0; x<boards[id]->getWidth(); ++x) {
+//             if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11))) {
+//                 xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+//                         cellWidth-1,cellWidth-1, 1); // +2 and -2 are to prevent overwriting the lines drawn
+//             } else if (boards[id]->getCurPiece()->hasCoord(make_pair(x,y))) {
+//                 xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+//                        cellWidth-1, cellWidth-1, boards[id]->getCurPiece()->getColour());
+//                         // +2 and -2 are to prevent overwriting the line drawn
+//             } else if (y > fullHeight - 4) {
+//                 xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+//                         cellWidth-1,cellWidth-1, 0); // +2 and -2 are to prevent overwriting the lines drawn
+//             } else if (boards[id]->getGrid()[y][x].getHasBlock()) {
+//                 xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+//                        cellWidth-1, cellWidth-1, boards[id]->getGrid()[y][x].getBlock()->getColour());
+//                         // +2 and -2 are to prevent overwriting the line drawn
+//             }
+//             //  else {
+//             //     xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+//             //             cellWidth-2,cellWidth-2, 0); // +2 and -2 are to prevent overwriting the lines drawn
+//             // }
+//         }
+//     }
+// }
 
 void GraphicsDisplay::updateNext(int id){
     xw[id]->drawString(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, "Next:");
