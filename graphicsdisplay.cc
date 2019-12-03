@@ -4,50 +4,79 @@
 #include <algorithm>
 #include <sstream>
 #include "graphicsdisplay.h"
+#include "cell.h"
+
+
 using namespace std;
 
 GraphicsDisplay::GraphicsDisplay(vector<Board> &bs) {
-    for (int i=0; i<bs.size(); ++i) {
-        boards.emplace_back(&bs[i]);
+    for (unsigned i=0; i<bs.size(); ++i) {
+        // boards.emplace_back(&bs[i]);
         xw.emplace_back(new Xwindow);
 
         vector <vector <int>> tmpState;
         for(int j = 0; j < bs[i].getHeight() + 3;++j){ // adds rows of cells equal to the height
-            tmpState.emplace_back(vector<int>(bs[i].getWidth(), White));
+            tmpState.emplace_back(vector<int>(bs[i].getWidth(), Xwindow::White));
         }
         state.emplace_back(tmpState);
+
+        // Info info = bs[i].getInfo();
+        // boardInfos.emplace_back(info);
+
         init(i);
     }
 };
 
 GraphicsDisplay::~GraphicsDisplay() {
-    for (int i=0;i<xw.size(); ++i){
+    for (unsigned i=0;i<xw.size(); ++i){
         delete xw[i];
     }
 }
 
-void GraphicsDisplay::setState(int id) {
-    int fullHeight = boards[0]->getHeight()+3;
-    bool blind = boards[id]->getBlind();
+void GraphicsDisplay::setState(int id, const vector<vector<Cell>> &grid, Piece *piece, bool blind, int width, int height) {
+    int fullHeight = height+3;
 
     oldState = state;
 
     for (int y=fullHeight-1; y>=0; --y) {
-        for (int x=0; x<boards[id]->getWidth(); ++x) {
+        for (int x=0; x<width; ++x) {
             if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11))) {
-                state[id][y][x] = Black;
-            } else if (boards[id]->getCurPiece()->hasCoord(make_pair(x,y))) {
-                state[id][y][x] = boards[id]->getCurPiece()->getColour();
+                state[id][y][x] = Xwindow::Black;
+            } else if (piece->hasCoord(make_pair(x,y))) {
+                state[id][y][x] = piece->getColour();
             } else if (y > fullHeight - 4) {
-                state[id][y][x] = White;
-            } else if (boards[id]->getGrid()[y][x].getHasBlock()) {
-                state[id][y][x] = boards[id]->getGrid()[y][x].getBlock()->getColour();
+                state[id][y][x] = Xwindow::White;
+            } else if (grid[y][x].getHasBlock()) {
+                state[id][y][x] = grid[y][x].getBlock()->getColour();
             } else {
-                state[id][y][x] = White;
+                state[id][y][x] = Xwindow::White;
             }
         }
     }
 }
+
+// void GraphicsDisplay::setState(int id) {
+//     int fullHeight = boards[0]->getHeight()+3;
+//     bool blind = boards[id]->getBlind();
+
+//     oldState = state;
+
+//     for (int y=fullHeight-1; y>=0; --y) {
+//         for (int x=0; x<boards[id]->getWidth(); ++x) {
+//             if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11))) {
+//                 state[id][y][x] = Xwindow::Black;
+//             } else if (boards[id]->getCurPiece()->hasCoord(make_pair(x,y))) {
+//                 state[id][y][x] = boards[id]->getCurPiece()->getColour();
+//             } else if (y > fullHeight - 4) {
+//                 state[id][y][x] = Xwindow::White;
+//             } else if (boards[id]->getGrid()[y][x].getHasBlock()) {
+//                 state[id][y][x] = boards[id]->getGrid()[y][x].getBlock()->getColour();
+//             } else {
+//                 state[id][y][x] = Xwindow::White;
+//             }
+//         }
+//     }
+// }
 
 
 void GraphicsDisplay::drawGrid(int id) {
@@ -69,41 +98,60 @@ void GraphicsDisplay::init(int id) {
     xw[id]->drawString(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, "Next:");
     drawGrid(id);
 
-    updateDisplay(id);
+    // updateDisplay(id);
 }
 
-void GraphicsDisplay::updateDisplay(int id) {
-    setState(id);
-    updateLevel(id);
-    updateScore(id);
-    updateGrid(id);
-    updateNext(id);
-}
+// void GraphicsDisplay::updateDisplay(int id) {
+//     setState(id);
+//     updateLevel(id);
+//     updateScore(id);
+//     updateGrid(id);
+//     updateNext(id);
+// }
 
-void GraphicsDisplay::updateScore(int id) {
-    xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");
+void GraphicsDisplay::updateScore(int id, int score) {
+    // xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");
     ostringstream oss;
-    oss << boards[id]->getScore();
+    oss << score;
     xw[id]->fillRectangle(leftIndent+slIndent, topIndent+lineBreak, slIndent, lineBreak, 0); // clean the previous score
     xw[id]->drawString(leftIndent+slIndent, topIndent+lineBreak*2, oss.str());
 }
 
-void GraphicsDisplay::updateLevel(int id) {
-    ostringstream idss;
-    idss << id+1;
-    xw[id]->drawString(leftIndent, topIndent, "Player "+idss.str(), Xwindow::Black);
-    xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
+// void GraphicsDisplay::updateScore(int id) {
+//     // xw[id]->drawString(leftIndent, topIndent+lineBreak*2, "Score:");
+//     ostringstream oss;
+//     oss << boards[id]->getScore();
+//     xw[id]->fillRectangle(leftIndent+slIndent, topIndent+lineBreak, slIndent, lineBreak, 0); // clean the previous score
+//     xw[id]->drawString(leftIndent+slIndent, topIndent+lineBreak*2, oss.str());
+// }
+
+void GraphicsDisplay::updateLevel(int id, int level) {
+    // ostringstream idss;
+    // idss << id+1;
+    // xw[id]->drawString(leftIndent, topIndent, "Player "+idss.str(), Xwindow::Black);
+    // xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
     ostringstream oss;
-    oss << boards[id]->getLevel();
+    oss << level;
     xw[id]->fillRectangle(leftIndent+slIndent, topIndent, slIndent, lineBreak, 0); // clean the previous level
     xw[id]->drawString(leftIndent+slIndent, topIndent+lineBreak, oss.str());
 }
 
-void GraphicsDisplay::updateGrid(int id) {
-    int fullHeight = boards[0]->getHeight()+3;
+// void GraphicsDisplay::updateLevel(int id) {
+//     // ostringstream idss;
+//     // idss << id+1;
+//     // xw[id]->drawString(leftIndent, topIndent, "Player "+idss.str(), Xwindow::Black);
+//     // xw[id]->drawString(leftIndent, topIndent+lineBreak, "Level:");
+//     ostringstream oss;
+//     oss << boards[id]->getLevel();
+//     xw[id]->fillRectangle(leftIndent+slIndent, topIndent, slIndent, lineBreak, 0); // clean the previous level
+//     xw[id]->drawString(leftIndent+slIndent, topIndent+lineBreak, oss.str());
+// }
+
+void GraphicsDisplay::updateGrid(int id, int width, int height) {
+    int fullHeight = height+3;
     // drawGrid(id);
     for (int y=fullHeight-1; y>=0; --y) {
-        for (int x=0; x<boards[id]->getWidth(); ++x) {
+        for (int x=0; x<width; ++x) {
             if (oldState.size() == 0 || state[id][y][x] != oldState[id][y][x]) {
                 int colour = state[id][y][x];
                 xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
@@ -142,11 +190,41 @@ void GraphicsDisplay::updateGrid(int id) {
 //     }
 // }
 
-void GraphicsDisplay::updateNext(int id){
-    xw[id]->drawString(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, "Next:");
+void GraphicsDisplay::updateNext(int id, Piece *nextPiece, int height){
+    // xw[id]->drawString(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, "Next:");
     xw[id]->fillRectangle(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, slIndent*4, lineBreak*5, 0); // clean the previous next_block
-    for (auto block : boards[id]->getNextPiece()->getBlocks()) {
-           xw[id]->fillRectangle(leftIndent+(block.first)*cellWidth, topIndent+lineBreak*5+cellWidth*boardHeight+(boards[0]->getHeight()-block.second)*cellWidth,
-                    cellWidth, cellWidth, boards[id]->getNextPiece()->getColour());
+    for (auto block : nextPiece->getBlocks()) {
+           xw[id]->fillRectangle(leftIndent+(block.first)*cellWidth, topIndent+lineBreak*5+cellWidth*boardHeight+(height-block.second)*cellWidth,
+                    cellWidth, cellWidth, nextPiece->getColour());
     }
+}
+
+
+void GraphicsDisplay::notify(Subject<BoardInfo, BoardState> &whoFrom) {
+	// get the state information about what is notifying
+	BoardState state = whoFrom.getState();
+	BoardInfo info = whoFrom.getInfo();
+
+	if (state.type == StateType::BoardChange) {
+        updateLevel(info.id, info.level);
+        updateScore(info.id, info.score);
+        setState(info.id, info.grid, info.piece, info.blind, info.width, info.height);
+        updateGrid(info.id, info.width, info.height);
+        updateNext(info.id, info.nextPiece, info.height);
+	} else if (state.type == StateType::LevelChange) {
+        updateLevel(info.id, info.level);
+	}  else if (state.type == StateType::ScoreChange) {
+        updateScore(info.id, info.score);
+	} else if (state.type == StateType::BlindChange) {
+        setState(info.id, info.grid, info.piece, info.blind, info.width, info.height);
+        updateGrid(info.id, info.width, info.height);
+	} else if (state.type == StateType::PieceMoved) {
+		setState(info.id, info.grid, info.piece, info.blind, info.width, info.height);
+        updateGrid(info.id, info.width, info.height);
+	} else if (state.type == StateType::PieceDropped) {
+		setState(info.id, info.grid, info.piece, info.blind, info.width, info.height);
+        updateGrid(info.id, info.width, info.height);
+	} else if (state.type == StateType::NextPiece) {
+        updateNext(info.id, info.nextPiece, info.height);
+	}
 }

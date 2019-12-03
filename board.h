@@ -11,10 +11,15 @@
 #include "piececoords.h"
 #include "piece.h"
 #include "window.h"
+#include "boardinfo.h"
+#include "boardstate.h"
+#include "subject.h"
+#include "observer.h"
+
 
 const int MAX_LEVEL = 4; // max level
 
-class Board {
+class Board: public Subject<BoardInfo, BoardState> {
     int lastCleared = 0; // the last turn a row was cleared
     int turn = 0; // the turn of the board. goes up by one every drop
     std::unique_ptr<Level> level;
@@ -33,6 +38,7 @@ class Board {
     int score = 0;
     int width = 11;
     int height = 15;
+    int id;
     bool isRowFull(int r);
     void removeRowAndAddPoints(int r);
     bool rotatePiece(bool clockwise = true);
@@ -44,7 +50,7 @@ class Board {
     void setNextPiece(); // sets curPiece to nextPiece and gets the next piece
     void drop(); // drops the piece
 public:
-    Board(bool hasSeed, int seed, std::string file0, int lvl = 0);
+    Board(bool hasSeed, int seed, std::string file0, int id, int lvl = 0);
     void applyCommand(const Command &c);
     void setLevel(int lvl);
     // getters
@@ -61,7 +67,10 @@ public:
     int getScore() const;
     int getWidth() const;
     int getHeight() const;
-    BoardInfo getInfo() const;
+    
+    
+    BoardInfo getInfo() const override;
+    void initNotify();
     // TODO: need to make attach later
 
     //setters

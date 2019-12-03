@@ -18,9 +18,9 @@ int main(int argc, char *argv[]) {
         } else if (input == "-seed") {
             ca.setSeed(stoi(string(argv[++i])));
         } else if (input == "-scriptfile1") {
-            ca.setScriptFile1(string(argv[++i]));
+            ca.setScriptFile(string(argv[++i]), 0);
         } else if (input == "-scriptfile2") {
-            ca.setScriptFile2(string(argv[++i]));
+            ca.setScriptFile(string(argv[++i]), 1);
         } else if (input == "-startlevel") {
             ca.setStartLevel(stoi(string(argv[++i])));
         }
