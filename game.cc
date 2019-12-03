@@ -25,7 +25,6 @@ Game::Game(CommandArgs ca) {
     }
     td = make_unique<TextDisplay>(boards);
 
-    td->updateDisplay(cout);
 }
 
 void Game::updateDisplay(int id) {
@@ -38,6 +37,7 @@ void Game::updateDisplay(int id) {
 
 void Game::readInput(istream &in) {
     unique_ptr<InputReader> input = make_unique<InputReader>(in);
+    updateDisplay(whoseTurn);
 
     while (!hasWon()) {
         //Get the new command and apply it to curBoard
@@ -67,7 +67,6 @@ void Game::readInput(istream &in) {
             }
             continue;
         }
-
 
         // It is a normal command that is applied like usual
         curBoard.applyCommand(c);
