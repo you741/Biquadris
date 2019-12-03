@@ -28,7 +28,31 @@ int main(int argc, char *argv[]) {
         ++i;
     }
     // Create and run game
-    Game g = Game{ca};
-    g.readInput(cin);
-
+    int hiScore = 0;
+    while (true) {
+        Game g = Game{ca};
+        g.readInput(cin);
+        hiScore = max(hiScore,g.getWinnerScore());
+        if (g.getWinnerScore() == -1) {
+            continue;
+        } else {
+            cout << "The winner of this game, Player" << g.returnWinner() << ", scored " << g.getWinnerScore() << "points," << endl;
+            cout << "want to continue playing?[y/n]" << endl;
+            std::string decision;
+            bool wantToContinue = false;
+            while (cin >> decision) {
+                if (decision == "y") {
+                     wantToContinue = true;
+                     break;
+                } else if (decision == "n") {
+                    return 0;
+                } else {
+                    cout << "Please enter either 'y' or 'no'." << endl;
+                }
+            }
+            if (wantToContinue) {
+                continue;
+            }
+        }
+    }
 }

@@ -49,6 +49,10 @@ void Game::readInput(istream &in) {
         if (c.commandType == CommandType::EndOfFile) {
             return;
         }
+
+        if (c.commandType == CommandType::Restart) {
+            return;
+        }
         // If command is Sequence, must start reading from the file instead
         if (c.commandType == CommandType::Sequence) {
             ifstream inputFile;
@@ -96,6 +100,9 @@ void Game::readInput(istream &in) {
         }
 
     }
+    for (int i=0; i<numBoards;++i) {
+        winnerScore = max(winnerScore, boards[i].getScore());
+    }
 }
 
 void Game::nextTurn() {
@@ -104,6 +111,9 @@ void Game::nextTurn() {
     cout << "Player" << whoseTurn << "'s Turn" << endl;
 }
 
+int Game::getWinnerScore() {
+    return winnerScore;
+}
 
 bool Game::hasWon() {
     int alive = 0;
@@ -128,5 +138,3 @@ int Game::returnWinner() {
 Board& Game::getBoard(int target) {
     return boards[target];
 }
-
-
