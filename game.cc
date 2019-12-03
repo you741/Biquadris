@@ -66,7 +66,6 @@ bool Game::readSpecialCommand(istream &in) {
 bool Game::readInput(istream &in) {
     unique_ptr<InputReader> input = make_unique<InputReader>(in);
     bool sequenceAsksForSpecial = false;
-    updateDisplay(0);
     while (!hasWon()) {
         //Get the new command and apply it to curBoard
         Board &curBoard = boards[whoseTurn];
@@ -86,12 +85,15 @@ bool Game::readInput(istream &in) {
         // Either quit if it is coming from user
         //  or the file is done creating inputs
         if (c.commandType == CommandType::EndOfFile) {
+            cout << "End of File" << endl;
             return false;
         }
 
         if (c.commandType == CommandType::Restart) {
             boards[whoseTurn] = Board{ca.customSeed, ca.seed, ca.scriptfiles[whoseTurn], whoseTurn, ca.startLevel}; // sets a new Board
             updateDisplay(whoseTurn);
+            boards[whoseTurn].attach(graphics.get());
+            boards[whoseTurn].initNotify();
             continue;
         }
         // If command is Sequence, must start reading from the file instead
