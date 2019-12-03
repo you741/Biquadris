@@ -45,21 +45,21 @@ bool Game::readSpecialCommand(istream &in) {
 	unique_ptr<InputReader> input = make_unique<InputReader>(in);
 	cout << "Player " << whoseTurn+1 << ", enter a special command (blind/heavy/force [block type]): " << endl;
 	Command sc = input->readCommand(true);
-        while(sc.commandType == CommandType::INVALID) {
-	    cout << "Invalid special command, try again (blind/heavy/force [block type]): " << endl;
-	    sc = input->readCommand(true);
-        }
+    while(sc.commandType == CommandType::INVALID) {
+        cout << "Invalid special command, try again (blind/heavy/force [block type]): " << endl;
+        sc = input->readCommand(true);
+    }
 	if(sc.commandType == CommandType::EndOfFile) { // lets Game know it is end of file, so we can send the message to the caller
 	    return false;
 	}
-        //Apply the special command to other board
-        for (int i = 0; i < numBoards; ++i) {
-            if (i != whoseTurn) {
-                boards[i].applyCommand(sc);
-                // if(!textOnly)
-                //     graphics->updateDisplay(i);
-            }
+    //Apply the special command to other board
+    for (int i = 0; i < numBoards; ++i) {
+        if (i != whoseTurn) {
+            boards[i].applyCommand(sc);
+            // if(!textOnly)
+            //     graphics->updateDisplay(i);
         }
+    }
 	return true;
 }
 
@@ -77,7 +77,11 @@ bool Game::readInput(istream &in) {
           updateDisplay(whoseTurn);
           curBoard.setSpecial(false);
           sequenceAsksForSpecial = false;
+          curBoard.setDropped(false);
+          nextTurn();
+          continue;
         }
+
         cout << "Player " << whoseTurn+1 << "'s Turn: " << endl;
 
         Command c = input->readCommand(false);
@@ -124,8 +128,8 @@ bool Game::readInput(istream &in) {
                 }
                 updateDisplay(whoseTurn);
                 curBoard.setSpecial(false);
-	    }
-	    curBoard.setDropped(false);
+            }
+            curBoard.setDropped(false);
             nextTurn();
         }
     }

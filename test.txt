@@ -1,17 +1,27 @@
+se testSpecial.txt
+O
 2ri
 dr
+O
 2ri
 dr
+O
 4ri
 dr
+O
 4ri
 dr
+3levelup
+O
 6ri
 dr
+O
 6ri
 dr
+O
 8ri
 dr
+O
 8ri
 dr
 I
@@ -21,4 +31,6 @@ dr
 I
 clo
 15ri
+dr
+O
 dr

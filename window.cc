@@ -29,7 +29,7 @@ Xwindow::Xwindow(int width, int height): width{width}, height{height} {
 			height,DefaultDepth(d,DefaultScreen(d)));
 	gc = XCreateGC(d, pix, 0,(XGCValues *)0);
 
-	Font thefont = XLoadFont(d, "*-fixed-*-*-*-*-*-*-*-*-*-*-*-*");
+	// Font thefont = XLoadFont(d, "*-fixed-*-*-*-*-*-*-*-*-*-*-*-*");
 	XFlush(d);
 	XFlush(d);
 

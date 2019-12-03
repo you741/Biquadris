@@ -159,9 +159,8 @@ void Board::applyCommand(const Command &c) { // applies the command
         heavyFall();
         setState(BoardState{StateType::PieceMoved});
     } else if (c.commandType == CommandType::Clockwise) { // rotates clockwise
-        cout << "Lowest is: " << curPiece->getLowest() << endl;
-        cout << "LeftMost is: " << curPiece->getLeftmost() << endl;
-
+        // cout << "Lowest is: " << curPiece->getLowest() << endl;
+        // cout << "LeftMost is: " << curPiece->getLeftmost() << endl;
         for(int i = 0;i < c.rep%4;++i) { // repeats by modulo 4 because every 4 rotations is the same
             if(!rotatePiece()) break;
         }
