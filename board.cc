@@ -184,7 +184,7 @@ void Board::applyCommand(const Command &c) { // applies the command
     } else if (c.commandType == CommandType::Sequence) {
         // handled in Game, should do nothing here
     } else if (c.commandType == CommandType::Restart) {
-	// Game handles this 
+	// Game handles this
     } else if (c.commandType == CommandType::Heavy) {
         specialHeavy = true;
     } else if (c.commandType == CommandType::Force) { // sets a new piece, could lose
@@ -217,14 +217,15 @@ void Board::applyCommand(const Command &c) { // applies the command
                         break;
                     }
                     int j = height - 1;
-		    for(j = height - 1;j > 0;--j) {
+                    for(j = height - 1;j >= 0;--j) {
                         // tries the middle of the grid and tries place a block there start at the bottom
                         if(grid[j][int(width/2)].getHasBlock()) {
                             // if we find one with block, we stop here and place the block at row j+1 to put it right above here
-			    ++j;
+                            ++j;
                             break;
                         }
                     }
+                    if(j == -1) j = 0; // if we reached the end with no breaks, j ends up as -1. we set it to 0 in this case.
                     grid[j][int(width/2)].setBlock(new Block(make_pair(int(width/2),j),0,Xwindow::Brown,'*')); // drops the split block as low as it can get
                     removeFullRowsAndAddPoints(); // removes full rows and adds points, based on the split block this time
                 }
