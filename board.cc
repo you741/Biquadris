@@ -206,6 +206,7 @@ void Board::applyCommand(const Command &c) { // applies the command
     } else if (c.commandType == CommandType::Drop) {
         special = false; // we never get a special action unless we clear at least 2 rows, if we do the Drop command should set it to true
         dropped = true;
+        blind = false;
         for(int i = 0;i < c.rep && !lost;++i){
 	    drop(); // drops piece to the bottom, removes all full rows, moves turn up by 1
             if(lost) break; // no need to continue if we lost
