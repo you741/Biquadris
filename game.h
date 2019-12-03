@@ -15,6 +15,7 @@
 
 
 class Game{
+    CommandArgs ca;
     std::vector<Board> boards;
     int numBoards = 2;
     // unique_ptr<InputReader> input; // Old because of sequence command

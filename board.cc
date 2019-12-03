@@ -60,7 +60,6 @@ bool Board::doesCollide(PieceCoords* pc, bool checkUpperBound) {
             return true;
         }
     }
-    cout << "Did not collide" << endl;
     return false; // does not collide
 }
 
@@ -134,7 +133,6 @@ Board::Board(bool hasSeed, int seed, string file0, int lvl): level{make_unique<L
 }
 
 void Board::applyCommand(const Command &c) { // applies the command
-    cout << "Command received: " << c.commandType << endl;
     if(c.commandType == CommandType::MoveLeft) { // move left
         for(int i = 0;i < c.rep;++i) {// moves piece rep times to the left
             if (!movePiece(-1,0)) break; // breaks on failed move to save time
@@ -187,8 +185,7 @@ void Board::applyCommand(const Command &c) { // applies the command
     } else if (c.commandType == CommandType::Sequence) {
         // handled in Game, should do nothing here
     } else if (c.commandType == CommandType::Restart) {
-        // clear the board
-
+	// Game handles this 
     } else if (c.commandType == CommandType::Heavy) {
         specialHeavy = true;
     } else if (c.commandType == CommandType::Force) { // sets a new piece, could lose

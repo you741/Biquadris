@@ -15,6 +15,7 @@ Game::Game(CommandArgs ca) {
 
     // if ca.customSeed is true, then use the seed
     // if ca.scriptfile1 is "", then there is no custom scriptfile
+    this->ca = ca;
     boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile1, ca.startLevel});
     boards.emplace_back(Board{ca.customSeed, ca.seed, ca.scriptfile2, ca.startLevel});
 
@@ -41,6 +42,7 @@ void Game::readInput(istream &in) {
     while (!hasWon()) {
         //Get the new command and apply it to curBoard
         Board &curBoard = boards[whoseTurn];
+	cout << "Player " << whoseTurn+1 << "'s Turn: ";
         Command c = input->readCommand(false);
 
 
@@ -51,7 +53,9 @@ void Game::readInput(istream &in) {
         }
 
         if (c.commandType == CommandType::Restart) {
-            return;
+            boards[whoseTurn] = Board{ca.customSeed, ca.seed, ca.scriptfile1, ca.startLevel}; // sets a new Board
+	    updateDisplay(whoseTurn);
+	    return;
         }
         // If command is Sequence, must start reading from the file instead
         if (c.commandType == CommandType::Sequence) {
@@ -67,15 +71,6 @@ void Game::readInput(istream &in) {
 
         // It is a normal command that is applied like usual
         curBoard.applyCommand(c);
-
-        cout << "Current Piece: " << endl;
-        for(auto p: (curBoard.getCurPiece())->getCoords()->getBlocks()) {
-            cout << p.first << "," << p.second << endl;
-        }
-        cout << "Next Piece: " << endl;
-        for(auto p: (curBoard.getNextPiece())->getCoords()->getBlocks()) {
-            cout << p.first << "," << p.second << endl;
-        }
         updateDisplay(whoseTurn);
         // If it is dropped, check if any special actions are triggered.
         //  Switch turns
@@ -93,6 +88,7 @@ void Game::readInput(istream &in) {
                         graphics->updateDisplay(i);
                     }
                 }
+		updateDisplay(whoseTurn);
 		curBoard.setSpecial(false);
             }
 	    curBoard.setDropped(false);
@@ -108,7 +104,6 @@ void Game::readInput(istream &in) {
 void Game::nextTurn() {
     ++whoseTurn;
     whoseTurn %= numBoards;
-    cout << "Player" << whoseTurn << "'s Turn" << endl;
 }
 
 int Game::getWinnerScore() {
