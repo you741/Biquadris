@@ -11,8 +11,8 @@ struct CommandArgs{
     int seed = 0;
     bool customSF1 = false;
     bool customSF2 = false;
-    std::string scriptfile1 = "";
-    std::string scriptfile2 = "";
+    std::string scriptfile1 = "biquadris_sequence1.txt";
+    std::string scriptfile2 = "biquadris_sequence2.txt";
     int startLevel = 0;
   
     void setSeed(int s);
