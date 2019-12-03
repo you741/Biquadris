@@ -8,9 +8,15 @@
 class Board;
 
 class GraphicsDisplay {
+    enum { White = 0, Black, Red, Green, Blue, Cyan, Yellow, Magenta,
+		Orange, Brown, DarkGreen }; // Available colours.
 
     std::vector <Board*> boards;
     std::vector <Xwindow*> xw;
+
+    std::vector <std::vector <std::vector <int>>> state;
+    std::vector <std::vector <std::vector <int>>> oldState;
+
 
     const int leftIndent = 20;
     const int topIndent = 20;
@@ -26,6 +32,7 @@ class GraphicsDisplay {
     void updateGrid(int id);
     void updateNext(int id);
     void drawGrid(int id);
+    void setState(int id);
  public:
      GraphicsDisplay(std::vector<Board> &bs);
      void updateDisplay(int id);
