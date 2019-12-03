@@ -25,6 +25,7 @@ class GraphicsDisplay {
     void updateScore(int id);
     void updateGrid(int id);
     void updateNext(int id);
+    void drawGrid(int id);
  public:
      GraphicsDisplay(std::vector<Board> &bs);
      void updateDisplay(int id);

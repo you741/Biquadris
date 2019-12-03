@@ -11,6 +11,7 @@ TextDisplay::TextDisplay(vector<Board> &bs) {
     for (unsigned i = 0; i < bs.size(); ++i) {
         boards.emplace_back(&bs[i]);
     }
+    updateDisplay(cout);
 };
 
 void TextDisplay::updateDisplay(std::ostream &out) {
