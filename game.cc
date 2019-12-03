@@ -29,7 +29,7 @@ Game::Game(CommandArgs ca) {
 }
 
 void Game::updateDisplay(int id) {
-    cout << "Update display" << endl;
+    // cout << "Update display" << endl;
     td->updateDisplay(cout);
     if (!textOnly) {
         graphics->updateDisplay(id);
@@ -42,7 +42,7 @@ void Game::readInput(istream &in) {
     while (!hasWon()) {
         //Get the new command and apply it to curBoard
         Board &curBoard = boards[whoseTurn];
-	cout << "Player " << whoseTurn+1 << "'s Turn: ";
+	    cout << "Player " << whoseTurn+1 << "'s Turn: " << endl;
         Command c = input->readCommand(false);
 
 

@@ -220,7 +220,7 @@ void Board::applyCommand(const Command &c) { // applies the command
                         // tries the middle of the grid and tries place a block there start at the bottom
                         if(!grid[i][int(width/2)].getHasBlock()) {
                             // if we find one with no block, we place it here
-                            grid[i][int(width/2)].setBlock(new Block(make_pair(int(width/2),i),0,Xwindow::Yellow,'|'));
+                            grid[i][int(width/2)].setBlock(new Block(make_pair(int(width/2),i),0,Xwindow::Brown,'*'));
                             break;
                         }
                     }
