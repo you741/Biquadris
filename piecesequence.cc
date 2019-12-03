@@ -1,5 +1,6 @@
 #include "piecesequence.h"
 #include "block.h"
+// #include <iostream>
 
 using namespace std;
 
@@ -11,7 +12,7 @@ PieceSequence::PieceSequence(int lvl, bool hasSeed, int seed, int height): level
         srand(time(NULL)); // sets the seed to null time by default
     }
 }
-PieceSequence::PieceSequence(std::string filename, int lvl, bool hasSeed, int seed, int height): filename{filename}, file{filename}, level{new Level{lvl}}, hasSeed{hasSeed}, seed{seed}, height{height} {
+PieceSequence::PieceSequence(std::string filename, int lvl, bool hasSeed, int seed, int height): filename{filename}, file{ifstream(filename)}, level{new Level{lvl}}, hasSeed{hasSeed}, seed{seed}, height{height} {
     this->random = level->isRandom();
     if(hasSeed){ // sets the seed if we have it
         srand(seed);
@@ -26,8 +27,9 @@ Piece* PieceSequence::getPiece() { // generates a piece based on random and the 
     if(level->getLevel() == 0 || !random) { // it needs to be nonrandom here (level 0 has to be nonrandom)
         if(file.eof()) { // if we could not read the file (eof), then we restart the file stream
             file = ifstream(filename);
-            file >> nextBlockType;
         }
+        file >> nextBlockType;
+        // cout << "Next Block Is: " << nextBlockType << endl;
     } else { // then it is a random generation
         int r = rand();
         // LEVEL 1
