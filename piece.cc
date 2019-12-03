@@ -85,7 +85,7 @@ void Piece::setCoords(unique_ptr<PieceCoords> &&pc) {
 PieceCoords* Piece::rotatePiece(bool clockwise) const { // returns coordinates the piece would have if it was rotated either clockwise or counterclockwise
     vector<pair<int,int>> newBlocks;
     int newHeight = coords->getWidth();
-    int newWidth = coords->getHeight();
+    // int newWidth = coords->getHeight();
     int lowest = coords->getLowest();
     int leftmost = coords->getLeftmost();
     if(clockwise) {
