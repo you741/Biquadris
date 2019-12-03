@@ -25,7 +25,6 @@ Game::Game(CommandArgs ca) {
     }
     td = make_unique<TextDisplay>(boards);
 
-    td->updateDisplay(cout);
 }
 
 void Game::updateDisplay(int id) {
@@ -66,15 +65,15 @@ bool Game::readInput(istream &in) {
     while (!hasWon()) {
         //Get the new command and apply it to curBoard
         Board &curBoard = boards[whoseTurn];
-	if(sequenceAsksForSpecial) {
-		if(!readSpecialCommand(in)) {
-			return true; // if we get false, that means readSpecialCommand got an EOF and we just return true to let the caller know
-		}
-		updateDisplay(whoseTurn);
-		curBoard.setSpecial(false);
-		sequenceAsksForSpecial = false;
-	}
-	cout << "Player " << whoseTurn+1 << "'s Turn: " << endl;
+        if(sequenceAsksForSpecial) {
+          if(!readSpecialCommand(in)) {
+            return true; // if we get false, that means readSpecialCommand got an EOF and we just return true to let the caller know
+          }
+          updateDisplay(whoseTurn);
+          curBoard.setSpecial(false);
+          sequenceAsksForSpecial = false;
+        }
+        cout << "Player " << whoseTurn+1 << "'s Turn: " << endl;
         Command c = input->readCommand(false);
 
         // Either quit if it is coming from user
@@ -85,8 +84,8 @@ bool Game::readInput(istream &in) {
 
         if (c.commandType == CommandType::Restart) {
             boards[whoseTurn] = Board{ca.customSeed, ca.seed, ca.scriptfile1, ca.startLevel}; // sets a new Board
-	    updateDisplay(whoseTurn);
-	    continue;
+	          updateDisplay(whoseTurn);
+	          continue;
         }
         // If command is Sequence, must start reading from the file instead
         if (c.commandType == CommandType::Sequence) {
@@ -99,10 +98,10 @@ bool Game::readInput(istream &in) {
             continue;
         }
 
-	if(c.commandType == CommandType::INVALID) {
-	    cout << "Invalid command." << endl;
+        if(c.commandType == CommandType::INVALID) {
+            cout << "Invalid command." << endl;
             continue;
-	}
+        }
 
         // It is a normal command that is applied like usual
         curBoard.applyCommand(c);
@@ -111,13 +110,13 @@ bool Game::readInput(istream &in) {
         //  Switch turns
         if (curBoard.getDropped()) {
             if (curBoard.getSpecial()) {
-		if(!readSpecialCommand(in)) {
-		    return true; // if we get false, that means readSpecialCommand got an EOF and we just return true to let the caller know
-		}
-		updateDisplay(whoseTurn);
-		curBoard.setSpecial(false);
-	    }
-	    curBoard.setDropped(false);
+                if(!readSpecialCommand(in)) {
+                    return true; // if we get false, that means readSpecialCommand got an EOF and we just return true to let the caller know
+                }
+                updateDisplay(whoseTurn);
+                curBoard.setSpecial(false);
+	          }
+	          curBoard.setDropped(false);
             nextTurn();
         }
     }

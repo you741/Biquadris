@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
                 } else if (decision == "n") {
                     return 0;
                 } else {
-                    cout << "Please enter either 'y' or 'no'." << endl;
+                    cout << "Please enter either 'y' or 'n'." << endl;
                 }
             }
             if (wantToContinue) {

@@ -20,8 +20,6 @@ class GraphicsDisplay {
     const int boardHeight = 18;
     const int slIndent = 50;
 
-    const std::vector<char> colours {'W', 'B', 'I', 'J', 'L', 'O', 'S', 'Z', 'T'};
-
     void init(int id);
     void updateLevel(int id);
     void updateScore(int id);
