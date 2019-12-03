@@ -6,15 +6,6 @@
 #include "graphicsdisplay.h"
 using namespace std;
 
-int getIndex(const vector<char> &v, const char &c) {
-    for (int i=0; i<v.size(); ++i) {
-        if (v[i] == c) {
-            return i;
-        }
-    }
-    return 0;
-}
-
 GraphicsDisplay::GraphicsDisplay(vector<Board> &bs) {
     for (int i=0; i<bs.size(); ++i) {
         boards.emplace_back(&bs[i]);
@@ -66,28 +57,36 @@ void GraphicsDisplay::updateScore(int id) {
 }
 
 void GraphicsDisplay::updateGrid(int id) {
-    for (int y=boards[id]->getHeight()-1; y>=0; --y) {
+    int fullHeight = boards[0]->getHeight()+3;
+    bool blind = boards[id]->getBlind();
+    for (int y=fullHeight-1; y>=0; --y) {
         for (int x=0; x<boards[id]->getWidth(); ++x) {
-            if (boards[id]->getGrid()[boards[id]->getHeight() - 1 - y][x].getHasBlock()) {
-                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*y,
-                        cellWidth-1, cellWidth-1, getIndex(colours, boards[id]->getCurPiece()->getSym()));
-                        // +1 and -1 are to prevent overwriting the line drawn
-            } else if (boards[id]->getCurPiece()->hasCoord(make_pair(y,x))) {
-                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*y,
-                        cellWidth-1, cellWidth-1, getIndex(colours, boards[id]->getCurPiece()->getSym()));
-                        // +1 and -1 are to prevent overwriting the line drawn
+            if (blind && ((2 <= x && x <= 8) || (2 <= y && y <= 11))) {
+                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+                        cellWidth-2,cellWidth-2, 1); // +2 and -2 are to prevent overwriting the lines drawn
+            } else if (boards[id]->getCurPiece()->hasCoord(make_pair(x,y))) {
+                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+                       cellWidth-2, cellWidth-2, boards[id]->getCurPiece()->getColour());
+                        // +2 and -2 are to prevent overwriting the line drawn
+            } else if (y > fullHeight - 4) {
+                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+                        cellWidth-2,cellWidth-2, 0); // +2 and -2 are to prevent overwriting the lines drawn
+            } else if (boards[id]->getGrid()[y][x].getHasBlock()) {
+                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+                       cellWidth-2, cellWidth-2, boards[id]->getGrid()[y][x].getBlock()->getColour());
+                        // +2 and -2 are to prevent overwriting the line drawn
             } else {
-                xw[id]->fillRectangle(leftIndent+x*cellWidth+1,topIndent+lineBreak*3+cellWidth*y,
-                        cellWidth-1,cellWidth-1, 0); // +1 and -1 are to prevent overwriting the lines drawn
+                xw[id]->fillRectangle(leftIndent+x*cellWidth+1, topIndent+lineBreak*3+cellWidth*(fullHeight-1-y)+1,
+                        cellWidth-2,cellWidth-2, 0); // +2 and -2 are to prevent overwriting the lines drawn
             }
         }
     }
 }
 
 void GraphicsDisplay::updateNext(int id){
-    xw[id]->fillRectangle(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, slIndent, lineBreak*3, 0); // clean the previous next_block
-    for (auto block : boards[id]->getCurPiece()->getBlocks()) {
-           xw[id]->fillRectangle(leftIndent+(block.first)*cellWidth, topIndent+lineBreak*5.5+(block.second)*cellWidth,
-                    cellWidth, cellWidth, getIndex(colours, boards[id]->getCurPiece()->getSym()));
+    xw[id]->fillRectangle(leftIndent, topIndent+lineBreak*4.5+cellWidth*boardHeight, slIndent*4, lineBreak*5, 0); // clean the previous next_block
+    for (auto block : boards[id]->getNextPiece()->getBlocks()) {
+           xw[id]->fillRectangle(leftIndent+(block.first)*cellWidth, topIndent+lineBreak*5+cellWidth*boardHeight+(boards[0]->getHeight()-block.second)*cellWidth,
+                    cellWidth, cellWidth, boards[id]->getNextPiece()->getColour());
     }
 }
