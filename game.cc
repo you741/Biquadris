@@ -88,8 +88,10 @@ bool Game::readInput(istream &in) {
         if (c.commandType == CommandType::Restart) {
             boards[whoseTurn] = Board{ca.customSeed, ca.seed, ca.scriptfiles[whoseTurn], whoseTurn, ca.startLevel}; // sets a new Board
             updateDisplay(whoseTurn);
-            boards[whoseTurn].attach(graphics.get()); // reattach the observer
-            boards[whoseTurn].initNotify();
+            if (!textOnly) {
+                boards[whoseTurn].attach(graphics.get()); // reattach the observer
+                boards[whoseTurn].initNotify();
+            }
             continue;
         }
         // If command is Sequence, must start reading from the file instead
