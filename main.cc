@@ -52,13 +52,13 @@ int main(int argc, char *argv[]) {
                      wantToContinue = true;
                      break;
                 } else if (decision == "n") {
-                    return 0;
+		     break;
                 } else {
                     cout << "Please enter either 'y' or 'n'." << endl;
                 }
             }
-            if (wantToContinue) {
-                continue;
+            if (!wantToContinue) {
+                break;
             }
         }
     }
