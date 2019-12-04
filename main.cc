@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "commandargs.h"
 #include "game.h"
 
@@ -7,7 +8,6 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     CommandArgs ca;
-
     int i = 1;
     string input;
     while (i < argc) {
@@ -30,6 +30,11 @@ int main(int argc, char *argv[]) {
     }
     // Create and run game
     int hiScore = 0;
+    ifstream ifs {"record.txt"};
+    if (!ifs.fail()) {
+        ifs >> hiScore;
+    }
+    ifs.close();
     while (true) {
         Game g = Game{ca};
         g.readInput(cin);
@@ -57,4 +62,8 @@ int main(int argc, char *argv[]) {
             }
         }
     }
+    ofstream ofs {"record.txt"};
+    ofs << hiScore << endl;
+    ofs.close();
+    return 0;
 }
